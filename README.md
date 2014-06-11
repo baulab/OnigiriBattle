@@ -22,7 +22,7 @@
 1. Clone the project into your Nodeclipse workspace, then import it.
 2. Make sure that you had installed [Node.js](http://nodejs.org).
 2. Execute `npm install` in project folder to install node modules.
-3. Execute `npm start` to start the server at localhost:3000
+3. Execute `npm start` to start the server at `localhost:3000`
 
 ## Developing
 
