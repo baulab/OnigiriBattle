@@ -11,7 +11,6 @@ var express = require('express')
   , socket = require('socket.io');
 
 var app = express();
-var io = socket();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -32,6 +31,19 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
+});
+
+var io = socket.listen(server);
+
+io.on('connection', function(socket){
+	console.log('user %s connected', socket.id);
+	socket.on('disconnect', function(){
+		console.log('user %s disconnected', socket.id);
+	});
+	socket.on('chat message', function(msg){
+		console.log('message: ' + msg);
+		io.emit('chat message', socket.id + ': ' + msg);
+	});
 });
