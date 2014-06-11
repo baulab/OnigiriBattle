@@ -7,9 +7,11 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , socket = require('socket.io');
 
 var app = express();
+var io = socket();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
