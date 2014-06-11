@@ -13,6 +13,10 @@
 2. [Socket.IO](http://socket.io) - Real-time Engine
 3. [Jade](http://jade-lang.com) - Node Template Engine
 
+### Javascript frameworks
+
+1. [jQuery 1.11.1](http://jquery.com)
+
 ### Usage
 
 1. Clone the project into your Nodeclipse workspace, then import it.
