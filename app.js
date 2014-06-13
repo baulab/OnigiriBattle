@@ -7,7 +7,9 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , UUID = require('node-uuid')
+  , io = require('socket.io');
 
 var app = express();
 
@@ -30,6 +32,36 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+
+
+var gameServer = require('./game.server.js');
+var sio = io.listen(server);
+
+// bind init event
+sio.sockets.on('connection', function (client) {
+  client.userid = UUID();
+
+  //tell the player they connected, giving them their id
+  client.emit('onconnected', { id: client.userid } );
+
+  console.log('\t socket.io:: player ' + client.userid + ' connected');
+  
+  /**
+	 * Player moved event
+	 */
+  client.on('playermoved', function(m) {
+    gameServer.onPlayerMoved(client, m);
+  }); //client.on message
+
+  /**
+	 * Disconnect event
+	 */
+  client.on('disconnect', function (m) {
+    gameServer.onDisconnected(client, m);
+  }); //client.on disconnect
+     
+}); //sio.sockets.on connection
