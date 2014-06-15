@@ -2,11 +2,19 @@ extends layout
 
 block append head
   script(src='/socket.io/socket.io.js')
-  //script(type='text/javascript', href='/socket.io/socket.io.js')
   script(src='/js/jquery-1.11.1.min.js')
   script(src='/js/main.js')
 
 block content
+  div#host
+  p -------------------
+  ul#players
+  p -------------------
+  spam Is Ready?  
+  input#isReady(type="checkbox")
+  p -------------------
+  button#start(disabled="disabled") Start
+  p -------------------
   ul#messages
     
   form(action="")

@@ -5,7 +5,8 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , user = require('./routes/user')
+  , chatroom = require('./routes/chatroom')
+  , Player = require('./routes/player')
   , http = require('http')
   , path = require('path')
   , socket = require('socket.io');
@@ -29,7 +30,6 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/users', user.list);
 
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
@@ -37,13 +37,50 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 
 var io = socket.listen(server);
 
-io.on('connection', function(socket){
-	console.log('user %s connected', socket.id);
-	socket.on('disconnect', function(){
-		console.log('user %s disconnected', socket.id);
-	});
-	socket.on('chat message', function(msg){
-		console.log('message: ' + msg);
-		io.emit('chat message', socket.id + ': ' + msg);
-	});
+io.on('connection', function(socket) {
+    console.log('new player connected');
+
+    socket.on('init player', function(player) {
+        // Retain new player
+        var newplayer = new Player(player.name, player.color);
+        socket.player = newplayer;
+        chatroom.addPlayer(newplayer);
+
+        // Notify client player joined
+        io.emit('player joined', {'chatroom': chatroom, 'newPlayer': newplayer});
+        console.log('player %s joined', newplayer.name);
+    });
+
+    socket.on('disconnect', function() {
+        if (!socket.player) {
+            // When server crash, client reconnect
+            console.log('dead socket disconnected');
+            return;
+        }
+        
+        // Remove player from players
+        chatroom.removePlayer(socket.player.name);
+        
+        // Notify client player left.
+        io.emit('player left', {'chatroom': chatroom, 'exitPlayer': socket.player});
+        
+        console.log(socket.player.name + ' disconnected');
+    });
+    
+    socket.on('update play status', function(isPlay) {
+        socket.player.setPlay(isPlay);
+        chatroom.updatePlayer(socket.player);
+        io.emit('update play status', {'chatroom': chatroom, 'updatePlayer': socket.player})
+    });
+    
+    socket.on('chat message', function(msg) {
+        if (!socket.player) {
+            // When server crash, client reconnect
+            console.log('dead socket disconnected');
+            return;
+        }
+        
+        console.log(socket.player.name + ': ' + msg);
+        io.emit('chat message', socket.player.name + ': ' + msg);
+    });
 });
