@@ -6,17 +6,31 @@ block append head
   script(src='/js/main.js')
 
 block content
-  div#host
-  p -------------------
-  ul#players
-  p -------------------
-  spam Is Ready?  
-  input#isReady(type="checkbox")
-  p -------------------
-  button#start(disabled="disabled") Start
-  p -------------------
-  ul#messages
+  div#chatroom
+    div#host
+    p -------------------
+    ul#players
+    p -------------------
+    spam Is Ready?  
+    input#isReady(type="checkbox")
+    p -------------------
+    button#start(disabled="disabled") Start
+    p -------------------
+    ul#messages
     
-  form(action="")
-    input#m(autocomplete="off")
-    button send
+    form(action="")
+      input#m(autocomplete="off")
+      button send
+    p -------------------
+    button#to_win Show Win
+    
+  div#game_area
+    h1 Game Area
+    
+  div#result_area
+    h1 Result Area
+    div#show_result
+      div#result_msg
+      div#result_time
+    div
+      button#restart Restart

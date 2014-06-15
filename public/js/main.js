@@ -1,54 +1,89 @@
 // DOM controller
 $(document).ready(function() {
     var socket = io();
-
-    $('form').submit(function(e) {
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
-        return false;
-    });
-    
-    $('#isReady').on('change', function() {
-        socket.emit('update play status', $(this).is(':checked'));
-    });
-    
-    $('#start').click(function() {
-       $(this).prop('disabled', true);
-    });
-    
     var info = {}; // All player info and status
     var player = new Object;
-    player.name = makeid();
-    player.color = 'red';
-    
-    socket.emit('init player', player);
-    
-    socket.on('player joined', function(obj) {
-        // Update host
-        updateHost(obj);        
+    init();
+    function init(){
+    	swapTo('chatroom');
+    	events();
+    	conn();
+    	player.name = makeid();
+        player.color = 'red';
+    	socket.emit('init player', player);
+    }
+    function swapTo(id){
+    	$('#'+id).show();
+    	$('#'+id).siblings().hide();
+    }
+    function events(){
+        $('form').submit(function(e) {
+            socket.emit('chat message', $('#m').val());
+            $('#m').val('');
+            return false;
+        });
         
-        // Notify new player joined
-        $('#players').append($('<li>').text(obj.newPlayer.name + ' joined'));
-    });
-    
-    socket.on('player left', function(obj) {
-        // Update host
-        updateHost(obj);
+        $('#isReady').on('change', function() {
+            socket.emit('update play status', $(this).is(':checked'));
+        });
         
-        $('#players').append($('<li>').text(obj.exitPlayer.name + ' left'));
-    })
-    
-    socket.on('update play status', function(obj) {
-        // Update host
-        updateHost(obj);
+        $('#start').click(function() {
+           $(this).prop('disabled', true);
+        });
         
-        // Update all player list
-        // ....
-    })    
-    
-    socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg));
-    });
+        $('#to_win').unbind().click(function(){
+        	swapTo('result_area');
+        	socket.emit('finish',{win:true});
+        });
+        
+        $('#to_win').unbind().click(function(){
+        	swapTo('result_area');
+        	socket.emit('game finish',{win:true});
+        });
+        
+        $('#restart').unbind().click(function(){
+        	swapTo('chatroom');
+        	socket.emit('chat message','Welcome back to room~');
+        });
+    }
+    function conn(){
+    	socket.on('update play status', function(obj) {
+            // Update host
+            updateHost(obj);
+            
+            // Update all player list
+            // ....
+        })    
+        
+        socket.on('chat message', function(msg){
+            $('#messages').append($('<li>').text(msg));
+        });
+    	
+    	socket.on('player joined', function(obj) {
+            // Update host
+            updateHost(obj);        
+            
+            // Notify new player joined
+            $('#players').append($('<li>').text(obj.newPlayer.name + ' joined'));
+        });
+        
+        socket.on('player left', function(obj) {
+            // Update host
+            updateHost(obj);
+            
+            $('#players').append($('<li>').text(obj.exitPlayer.name + ' left'));
+        });
+        
+        socket.on('game finish', function(obj){
+        	console.log(obj);
+        	if(obj.win){
+        		$('#result_msg').text('You Won!!!');
+        	}else{
+        		$('#result_msg').text('You Lost~~');
+        	}
+        	$('#result_time').text(new Date());
+        });
+    }
     
     function updateHost(obj) {
         // Update info
