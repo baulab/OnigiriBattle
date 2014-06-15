@@ -15,15 +15,43 @@ var game = {
       console.log("player: " + client.id);
       game.setClientUUID(client.id);
     });
+    
+    socket.on('startGame', function(){
+      console.log('start');
+    });
+    
+    socket.on('gamePlayerInfo', function(data){
+      console.log(data);
+    });
+    
+    
     socket.on('disconnected', function() {
       console.log("disconnect player: " + game.getClientUUID());
     });
+    
     $('#test_movie_right').click(function(){
-      socket.emit('playermoved', {msg: 'move right'});
+      socket.emit('playerMoved', {direct: 'right'});
     });
     
     $('#test_movie_left').click(function(){
-      socket.emit('playermoved', {msg: 'move left'});
+      socket.emit('playerMoved', {direct: 'left'});
+    });
+    
+    $('#test_movie_up').click(function(){
+      socket.emit('playerMoved', {direct: 'up'});
+    });
+    
+    $('#test_movie_down').click(function(){
+      socket.emit('playerMoved', {direct: 'down'});
+    });
+    
+    
+    $('#test_ready').click(function(){
+      socket.emit('ready');
+    });
+    
+    $('#test_start').click(function(){
+      socket.emit('joinGame');
     });
   },
   getClientUUID: function (){

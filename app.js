@@ -8,8 +8,9 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-  , UUID = require('node-uuid')
   , io = require('socket.io');
+
+var gameServer = require('./game.server.js');
 
 var app = express();
 
@@ -37,31 +38,9 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 });
 
 
-
-var gameServer = require('./game.server.js');
 var sio = io.listen(server);
 
-// bind init event
+// bind game core event
 sio.sockets.on('connection', function (client) {
-  client.userid = UUID();
-
-  //tell the player they connected, giving them their id
-  client.emit('onconnected', { id: client.userid } );
-
-  console.log('\t socket.io:: player ' + client.userid + ' connected');
-  
-  /**
-	 * Player moved event
-	 */
-  client.on('playermoved', function(m) {
-    gameServer.onPlayerMoved(client, m);
-  }); //client.on message
-
-  /**
-	 * Disconnect event
-	 */
-  client.on('disconnect', function (m) {
-    gameServer.onDisconnected(client, m);
-  }); //client.on disconnect
-     
+  gameServer.onUserConnected(sio, client);
 }); //sio.sockets.on connection
