@@ -1,36 +1,77 @@
-extends layout
+doctype html
 
-block append head
-  script(src='/socket.io/socket.io.js')
-  script(src='/js/jquery-1.11.1.min.js')
-  script(src='/js/main.js')
+html
+  head
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/socket.io/socket.io.js')
+    script(src='/js/jquery-1.11.1.min.js')
+    script(src='/js/main.js')
+    
+  body.backClass
+    #index.index
+      p LOGIN
+      form(id="loginInfo" name="input")
+        | Username:
+        input(type="text", id="username" name="user")
+        br
+        label Character: 
+          select#color.color(name="character")
+            option(value="red" style="color:red") Red
+            option(value="yellow" style="color:yellow") Yellow
+            option(value="blue" style="color:blue") Blue
+            option(value="purple" style="color:purple") Purple
+            option(value="black" style="color:black") Black
+            option(value="green" style="color:green") Green
+            option(value="pink" style="color:pink") Pink
+            option(value="orange" style="color:orange") Orange        
+        br
+        button.start_btn
+          img#loginInfoSubmit.start_img
+        
+    #chatroom
+      span#start_btn_span
+        button#start_button.start_btn
+          img.start_img
+      p name: 
+        span#nameSpan Origiri
+      p color: 
+        span#colorSpan Red
+      table
+        tr
+          td(rowspan="2")
+            p FRIENDS
+            textarea#friendsList
 
-block content
-  div#chatroom
-    div#host
-    p -------------------
-    ul#players
-    p -------------------
-    spam Is Ready?  
-    input#isReady(type="checkbox")
-    p -------------------
-    button#start(disabled="disabled") Start
-    p -------------------
-    ul#messages
-    
-    form(action="")
-      input#m(autocomplete="off")
-      button send
-    p -------------------
-    button#to_win Show Win
-    
-  div#game_area
-    h1 Game Area
-    
-  div#result_area
-    h1 Result Area
-    div#show_result
-      div#result_msg
-      div#result_time
-    div
-      button#restart Restart
+          td(rowspan="2")
+            div
+            button.start_btn
+              img#join.join
+            div  
+            button.start_btn
+              img#escape_btn.escape
+          td(rowspan="2")
+            p FIGHTING
+            textarea#fightList
+          td.tableRight
+            p Chatting Room
+            #chattingRoom.room
+              ul#messages
+          tr
+            td
+              textarea#enterMessage(placeholder="enter messages")
+              button.start_btn
+                img#send_message_btn.send_message_btn
+          tr
+            td
+              button#to_win To Win
+                
+    #game_area
+      #battle.battle
+        p hello
+    #result_area
+      h1 Result Area
+      #show_result
+        #result_msg
+        #result_time
+      div
+        button#restart Restart
