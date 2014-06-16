@@ -3,23 +3,40 @@ $(document).ready(function() {
     var socket = io();
     var info = {}; // All player info and status
     var player = new Object;
+    
     init();
     function init(){
-    	swapTo('chatroom');
+    	swapTo('index');
     	events();
     	conn();
-    	player.name = makeid();
-        player.color = 'red';
-    	socket.emit('init player', player);
+//    	player.name = makeid();
+//        player.color = 'red';
+//    	socket.emit('init player', player);
     }
     function swapTo(id){
     	$('#'+id).show();
     	$('#'+id).siblings().hide();
     }
     function events(){
-        $('form').submit(function(e) {
-            socket.emit('chat message', $('#m').val());
-            $('#m').val('');
+        $("#loginInfoSubmit").unbind().click(function(){
+	    	$(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');
+	    	swapTo('chatroom');
+	
+	        player.name = $('#username').val();
+	        player.color = $('#color').val();
+	        socket.emit('init player', player);
+	        $('.room').css('color',player.color);
+	        return false;
+	    });
+	
+	    $("#start_button").unbind().click(function(){
+	      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
+	      swapTo('game_area');
+	    });
+	    
+        $('#send_message_btn').unbind().click(function(e) {
+            socket.emit('chat message', $('#enterMessage').val());
+            $('#enterMessage').val('');
             return false;
         });
         
@@ -27,7 +44,7 @@ $(document).ready(function() {
             socket.emit('update play status', $(this).is(':checked'));
         });
         
-        $('#start').click(function() {
+        $('#start').unbind().click(function() {
            $(this).prop('disabled', true);
         });
         
@@ -61,7 +78,7 @@ $(document).ready(function() {
     	
     	socket.on('player joined', function(obj) {
             // Update host
-            updateHost(obj);
+            updateHost(obj);        
             
             // Notify new player joined
             $('#players').append($('<li>').text(obj.newPlayer.name + ' joined'));
@@ -76,10 +93,7 @@ $(document).ready(function() {
         
         socket.on('game finish', function(obj){
         	console.log(obj);
-        	if(obj.updatePlayer.name!==player.name){
-        		return;
-        	}
-        	if(obj.msg.win){
+        	if(obj.win){
         		$('#result_msg').text('You Won!!!');
         	}else{
         		$('#result_msg').text('You Lost~~');
