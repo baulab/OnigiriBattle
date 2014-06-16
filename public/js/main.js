@@ -61,7 +61,7 @@ $(document).ready(function() {
     	
     	socket.on('player joined', function(obj) {
             // Update host
-            updateHost(obj);        
+            updateHost(obj);
             
             // Notify new player joined
             $('#players').append($('<li>').text(obj.newPlayer.name + ' joined'));
@@ -76,7 +76,10 @@ $(document).ready(function() {
         
         socket.on('game finish', function(obj){
         	console.log(obj);
-        	if(obj.win){
+        	if(obj.updatePlayer.name!==player.name){
+        		return;
+        	}
+        	if(obj.msg.win){
         		$('#result_msg').text('You Won!!!');
         	}else{
         		$('#result_msg').text('You Lost~~');

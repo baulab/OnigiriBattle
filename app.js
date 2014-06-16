@@ -85,6 +85,6 @@ io.on('connection', function(socket) {
     });
     
     socket.on('game finish', function(obj){
-    	io.emit('game finish', obj);
+    	io.emit('game finish', {msg:obj,'updatePlayer': socket.player});
     });
 });
