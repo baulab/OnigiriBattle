@@ -3,82 +3,134 @@ $(document).ready(function() {
     var socket = io();
     var info = {}; // All player info and status
     var player = new Object;
-
-    $("#loginInfoSubmit").click(function(){
-    	$(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');
-    	$("#page0").hide();
-    	$("#page1").show();
-
-        player.name = $('#username').val();
-        player.color = $('#color').val()
-        socket.emit('init player', player);
-    });
-
-    $("#start_button").click(function(){
-      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
-      $("#page1").hide();
-      $("#page2").show();
-    });
-
-    // $('form').submit(function(e) {
-    //     socket.emit('chat message', $('#m').val());
-    //     $('#m').val('');
-    //     return false;
-    // });
     
-    // $('#isReady').on('change', function() {
-    //     socket.emit('update play status', $(this).is(':checked'));
-    // });
-    
-    // $('#start').click(function() {
-    //    $(this).prop('disabled', true);
-    // });
-    
-    // socket.on('player joined', function(obj) {
-    //     // Update host
-    //     updateHost(obj);        
+    init();
+    function init(){
+    	swapTo('index');
+    	events();
+    	conn();
+//    	player.name = makeid();
+//        player.color = 'red';
+//    	socket.emit('init player', player);
+    }
+    function swapTo(id){
+    	$('#'+id).show();
+    	$('#'+id).siblings().hide();
+    }
+    function events(){
+        $("#loginInfoSubmit").unbind().click(function(){
+	    	$(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');
+	    	swapTo('chatroom');
+	
+	        player.name = $('#username').val();
+	        player.color = $('#color').val();
+	        socket.emit('init player', player);
+	        $('.room').css('color',player.color);
+	        return false;
+	    });
+	
+	    $("#start_button").unbind().click(function(){
+	      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
+	      swapTo('game_area');
+	    });
+	    
+        $('#send_message_btn').unbind().click(function(e) {
+            socket.emit('chat message', $('#enterMessage').val());
+            $('#enterMessage').val('');
+            return false;
+        });
         
-    //     // Notify new player joined
-    //     $('#players').append($('<li>').text(obj.newPlayer.name + ' joined'));
-    // });
-    
-    // socket.on('player left', function(obj) {
-    //     // Update host
-    //     updateHost(obj);
+        $('#isReady').on('change', function() {
+            socket.emit('update play status', $(this).is(':checked'));
+        });
         
-    //     $('#players').append($('<li>').text(obj.exitPlayer.name + ' left'));
-    // })
-    
-    // socket.on('update play status', function(obj) {
-    //     // Update host
-    //     updateHost(obj);
+        $('#start').unbind().click(function() {
+           $(this).prop('disabled', true);
+        });
         
-    //     // Update all player list
-    //     // ....
-    // })    
-    
-    // socket.on('chat message', function(msg){
-    //     $('#messages').append($('<li>').text(msg));
-    // });
-    
-    // function updateHost(obj) {
-    //     // Update info
-    //     info = obj;
+        $('#to_win').unbind().click(function(){
+        	swapTo('result_area');
+        	socket.emit('finish',{win:true});
+        });
         
-    //     // Enable/Disable start button if player is host.
-    //     if (player.name == info.chatroom.host) {
-    //         // Update host
-    //         $('#host').text('host: ' + info.chatroom.host);
-    //         $('#start').prop('disabled', false);
-    //     } else {
-    //         $('#host').text('host: ' + info.chatroom.host);
-    //         $('#start').prop('disabled', true);
-    //     }
+        $('#to_win').unbind().click(function(){
+        	swapTo('result_area');
+        	socket.emit('game finish',{win:true});
+        });
         
-    //     // All players checkbox is unchecked.
-    //     if (!info.chatroom.host) {
-    //         $('#host').text('host: all players not ready');
-    //         $('#start').prop('disabled', true);            
-    //     }
-    // }
+        $('#restart').unbind().click(function(){
+        	swapTo('chatroom');
+        	socket.emit('chat message','Welcome back to room~');
+        });
+    }
+    function conn(){
+    	socket.on('update play status', function(obj) {
+            // Update host
+            updateHost(obj);
+            
+            // Update all player list
+            // ....
+        })    
+        
+        socket.on('chat message', function(msg){
+            $('#messages').append($('<li>').text(msg));
+        });
+    	
+    	socket.on('player joined', function(obj) {
+            // Update host
+            updateHost(obj);        
+            
+            // Notify new player joined
+            $('#players').append($('<li>').text(obj.newPlayer.name + ' joined'));
+        });
+        
+        socket.on('player left', function(obj) {
+            // Update host
+            updateHost(obj);
+            
+            $('#players').append($('<li>').text(obj.exitPlayer.name + ' left'));
+        });
+        
+        socket.on('game finish', function(obj){
+        	console.log(obj);
+        	if(obj.win){
+        		$('#result_msg').text('You Won!!!');
+        	}else{
+        		$('#result_msg').text('You Lost~~');
+        	}
+        	$('#result_time').text(new Date());
+        });
+    }
+    
+    function updateHost(obj) {
+        // Update info
+        info = obj;
+        
+        // Enable/Disable start button if player is host.
+        if (player.name == info.chatroom.host) {
+            // Update host
+            $('#host').text('host: ' + info.chatroom.host);
+            $('#start').prop('disabled', false);
+        } else {
+            $('#host').text('host: ' + info.chatroom.host);
+            $('#start').prop('disabled', true);
+        }
+        
+        // All players checkbox is unchecked.
+        if (!info.chatroom.host) {
+            $('#host').text('host: all players not ready');
+            $('#start').prop('disabled', true);            
+        }
+    }
 });
+
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 5; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
