@@ -24,6 +24,7 @@ $(document).ready(function() {
 	
 	        player.name = $('#username').val();
 	        player.color = $('#color').val();
+	        player.uuid = makeid();
 	        socket.emit('init player', player);
 	        $('.room').css('color',player.color);
 	        return false;
@@ -93,12 +94,14 @@ $(document).ready(function() {
         
         socket.on('game finish', function(obj){
         	console.log(obj);
-        	if(obj.win){
-        		$('#result_msg').text('You Won!!!');
-        	}else{
-        		$('#result_msg').text('You Lost~~');
+        	if(obj.updatePlayer.uuid==player.uuid){
+            	if(obj.msg.win){
+            		$('#result_msg').text('You Won!!!');
+            	}else{
+            		$('#result_msg').text('You Lost~~');
+            	}
+            	$('#result_time').text(new Date());	
         	}
-        	$('#result_time').text(new Date());
         });
     }
     

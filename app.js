@@ -42,7 +42,7 @@ io.on('connection', function(socket) {
 
     socket.on('init player', function(player) {
         // Retain new player
-        var newplayer = new Player(player.name, player.color);
+        var newplayer = new Player(player.name, player.color, player.uuid);
         socket.player = newplayer;
         chatroom.addPlayer(newplayer);
 
