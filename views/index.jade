@@ -2,12 +2,15 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/js/jquery-1.11.1.min.js')
+    script(type='text/javascript' src='/js/main.js')
+    
   body.backClass
     #page0(style="display:show;")
       p LOGIN
       form(id="loginInfo" name="input", action="", method="post")
         | Username:
-        input(type="text", name="user")
+        input(type="text", id="username" name="user")
         br
 
         label Character: 
