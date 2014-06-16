@@ -38,10 +38,10 @@ body {
   font-family: Comic Sans MS,arial,helvetica,sans-serif;
 }
 
-#start_btn_span {
+.start_btn {
   position: absolute;
-  left: 90%;
-  top: 85%;
+  left: 85%;
+  top: 80%;
 }
 
 #friendsList {

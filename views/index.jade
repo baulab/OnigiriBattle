@@ -8,7 +8,7 @@ html
   body.backClass
     #page0(style="display:show;")
       p LOGIN
-      form(id="loginInfo" name="input", action="", method="post")
+      form(id="loginInfo" name="input")
         | Username:
         input(type="text", id="username" name="user")
         br
@@ -25,12 +25,13 @@ html
             option(value="orange") Orange
                    
         br
-        input(id="loginInfoSubmit" type="submit", value="Send")
+        button(style = "background-color: transparent; border: 0;")
+        img(id="loginInfoSubmit" class="start_btn" src="../images/start_button.png")
         
     #page1(style="display:none;")
       span(id="start_btn_span")
         button(style = "background-color: transparent; border: 0;")
-        img(id="start_button" src="../images/start_button.png")
+        img(id="start_button" class="start_btn" src="../images/start_button.png")
       p name: 
         span(id="nameSpan") Origiri
       p color: 
