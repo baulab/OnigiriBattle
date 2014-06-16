@@ -1,14 +1,79 @@
-extends layout
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body.backClass
+    #page0(style="display:show;")
+      p LOGIN
+      form(id="loginInfo" name="input", action="", method="post")
+        | Username:
+        input(type="text", name="user")
+        br
 
-block append head
-  script(src='/socket.io/socket.io.js')
-  //script(type='text/javascript', href='/socket.io/socket.io.js')
-  script(src='/js/jquery-1.11.1.min.js')
-  script(src='/js/main.js')
+        label Character: 
+          select(name="character")
+            option(value="red") Red
+            option(value="yellow") Yellow
+            option(value="blue") Blue
+            option(value="purple") Purple
+            option(value="black") Black
+            option(value="green") Green
+            option(value="pink") Pink
+            option(value="orange") Orange
+                   
+        br
+        input(id="loginInfoSubmit" type="submit", value="Send")
+        
+    #page1(style="display:none;")
+      span(id="start_btn_span")
+        button(style = "background-color: transparent; border: 0;")
+        img(id="start_button" src="../images/start_button.png")
+      p name: 
+        span(id="nameSpan") Origiri
+      p color: 
+        span(id="colorSpan") Red
+        
+      table
+        tr
+          td(rowspan="2")
+            p FRIENDS
+            textarea(id="friendsList")
 
-block content
-  ul#messages
-    
-  form(action="")
-    input#m(autocomplete="off")
-    button send
+          td(rowspan="2")
+            div
+            button(style = "background-color: transparent; border: 0;")
+              img(id="join_btn" src="../images/join_arrow.png")
+            
+            div  
+            button(style= "background-color: transparent; border: 0;")
+              img(id="escape_btn" src="../images/escape_arrow.png")
+
+          td(rowspan="2")
+            p FIGHTING
+            textarea(id="fightList")
+
+          td.tableRight(style="width:500px")
+            p Chatting Room
+            textarea(id="chattingRoom")
+            
+          tr
+            td
+              textarea(placeholder="enter messages" id="enterMessage")
+              button(style = "background-color: transparent; border: 0;")
+                img(id="send_message_btn" src="../images/send_message_btn.png")
+                
+    #page2(style="display:none;")
+      #battle.battle
+        p hello
+          
+
+
+
+//extends layout
+
+//block content
+  //h1= title
+  //p Welcome to #{title}
+  
+//body
+  //p #{title}
