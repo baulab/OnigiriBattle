@@ -1,4 +1,4 @@
-hhfhafhd
+
 /**
  * Module dependencies.
  */
@@ -7,8 +7,7 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
-  , path = require('path')
-  , socket = require('socket.io');
+  , path = require('path');
 
 var app = express();
 
@@ -31,19 +30,6 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-var server = http.createServer(app).listen(app.get('port'), function(){
+http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
-});
-
-var io = socket.listen(server);
-
-io.on('connection', function(socket){
-	console.log('user %s connected', socket.id);
-	socket.on('disconnect', function(){
-		console.log('user %s disconnected', socket.id);
-	});
-	socket.on('chat message', function(msg){
-		console.log('message: ' + msg);
-		io.emit('chat message', socket.id + ': ' + msg);
-	});
 });
