@@ -28,6 +28,7 @@ $(document).ready(function() {
 	
 	    $("#start_button").unbind().click(function(){
 	      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
+	      socket.emit('init game');
 	      swapTo('game_area');
 	    });
 	    var keyAlt=false;

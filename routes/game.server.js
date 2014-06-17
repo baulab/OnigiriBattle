@@ -1,19 +1,21 @@
 var UUID = require('node-uuid');
-var gameServer = module.exports = {
-  games : {},
-  players: {},
-  host:'',
-  game_count : 0,
-  isPlaying: false,
-  syncInterval: ''
-};
+module.exports = exports = new gameServer();
+function gameServer() {
+  this.games = {};
+  this.players = {};
+  this.host ='';
+  this.game_count = 0;
+  this.isPlaying = false;
+  this.syncInterval = '';
+  this.chatroom = {};
+}
 
 /**
  * Defined common variables
  */
 var syncIntervalTime = 1500;
 var Player = function(playerSocket) {
-
+ 
   this.instance = playerSocket;
 
   // Set up initial values for our state information
@@ -59,26 +61,17 @@ var Player = function(playerSocket) {
 
 }; // game_player.constructor
 
-var io; // socket io from app.js
 
+var io; // socket io from app.js
 /**
  * socket io enter point
  */
-gameServer.onUserConnected = function(sio, client) {
+gameServer.prototype.initGameEvent = function(sio, client, chatroom) {
   io = sio; // io
-  client.uuid = UUID();
+  var that = this;
+  that.setChatroom(chatroom);
   
-  // tell the player they connected, giving them their id
-  client.emit('onconnected', {
-    id : client.uuid
-  });
-
   console.log('\t socket.io:: player:' + client.uuid + ' connected.');
-  
-  /**
-   * initial player information
-   */
-  this.players[client.uuid] = new Player(client);
   
   /**
    * modify user info
@@ -86,7 +79,7 @@ gameServer.onUserConnected = function(sio, client) {
    * nickname:
    */
   client.on('modifyUserInfo', function(data){
-    gameServer.onModifyUserInfo(client, data);
+    that.onModifyUserInfo(client, data);
   });
   
   
@@ -94,30 +87,29 @@ gameServer.onUserConnected = function(sio, client) {
    * player ready
    */
   client.on('ready', function(){
-    gameServer.onReady(client);
+    that.onReady(client);
   });
   
   /**
    * join game
    */
-  client.on('joinGame', function() {
-    gameServer.onJoinGame(client);
+  client.on('init game', function() {
+    that.onInitGame(client);
   });
 
   /**
    * Player move event
    */
   client.on('playerMoved', function(data) {
-    gameServer.onPlayerMoved(client, data);
+    that.onPlayerMoved(client, data);
   });
 
-  
   /**
    * Disconnect event
    */
-  client.on('disconnect', function() {
-    gameServer.onDisconnected(client);
-  });
+  /*client.on('disconnect', function() {
+    o_gameServer.onDisconnected(client);
+  });*/
   
   /**
    * TODO leave, finish game
@@ -129,66 +121,55 @@ gameServer.onUserConnected = function(sio, client) {
 
 };
 
-gameServer.onModifyUserInfo = function(client, data){
+gameServer.prototype.onModifyUserInfo = function(client, data){
   gameServer.players[client.uuid].color = data.color;
   gameServer.players[client.uuid].nickname = data.nickname;
   console.log("\t socket.io:: player:"+client.uuid+" modify info.", "color:", data.color, "nickname", data.nickname);
 };
 
-gameServer.onReady = function(client){
+gameServer.prototype.onReady = function(client){
   gameServer.players[client.uuid].isReady = true;
   console.log("\t socket.io:: player:"+client.uuid+" is ready.");
 };
 
 
-gameServer.onJoinGame = function(client) {
+gameServer.prototype.onInitGame = function(client) {
   console.log("\t socket.io:: host "+client.uuid+" start game.");
-  gameServer.host = client.uuid;
-  gameServer.players[client.uuid].isReady = true;
-
+  
+  var that = this;
+  
   // Join all ready users in gameServer.games
-  for(var uuid in gameServer.players){
-    if(gameServer.players[uuid].isReady){
-      gameServer.games[uuid] = gameServer.players[uuid];
+  for(var i=0; i<that.chatroom.playerList.length; i++){ 
+    if(that.chatroom.playerList[i].isPlay){
+      var uuid = that.chatroom.playerList[i].uuid;
       console.log("\t socket.io:: player:", uuid, "join game.");
-      
-      // join room & tell client start game
-      gameServer.games[uuid].instance.join("Game Room");
+      that.games[uuid] = that.chatroom.playerList[i]; 
+      that.games[uuid].randomPos();
     }
   }
   
   // broadcast join game players
-  io.sockets.to("Game Room").emit('startGame');
+  io.sockets.emit('start game', that.chatroom);
+
   this.isPlaying = true;
   
   /**
    * broadcast all player info every syncIntervalTime
    */
   gameServer.syncInterval = setInterval(function(){
-    var state = {};
-    for(var uuid in gameServer.games){
-      state[uuid]={
-          pos:{
-            x: gameServer.games[uuid].pos.x,
-            y: gameServer.games[uuid].pos.y
-          },
-          direct: gameServer.games[uuid].direct,
-          isDead: false, //TODO
-      };
-    }
-    io.sockets.to("Game Room").emit('gamePlayerInfo', state);
+    io.sockets.emit('gamePlayerInfo', that.chatroom);
   }, syncIntervalTime);
 };
 
-gameServer.onPlayerMoved = function(client, data) {
-  if(gameServer.isPlaying){
+gameServer.prototype.onPlayerMoved = function(client, data) {
+  if(this.isPlaying){
     console.log("\t socket.io:: player:", client.uuid, "action:", data.direct);
     
-    var o = gameServer.games[client.uuid];
-    o.old_state.pos.x = o.pos.x;
-    o.old_state.pos.y = o.pos.y;
+    var o = this.games[client.uuid];
+    o.old_pos.x = o.pos.x;
+    o.old_pos.y = o.pos.y;
     console.log("\t socket.io:: player:" , client.uuid,
-        "old position ( x , y ) = ", "(",o.old_state.pos.x, ",",o.old_state.pos.y,")");
+        "old position ( x , y ) = ", "(",o.old_pos.x, ",",o.old_pos.y,")");
     
     switch(data.direct){
     case 'up':
@@ -218,10 +199,14 @@ gameServer.onPlayerMoved = function(client, data) {
   }
 };
 
-gameServer.onDisconnected = function(client) {
+gameServer.prototype.onDisconnected = function(client) {
   console.log('\t socket.io:: client disconnected ' + client.uuid);
   delete this.players[client.uuid];
   if(gameServer.isPlaying){
     delete gameServer.games[client.uuid];
   }
 };
+
+gameServer.prototype.setChatroom = function(chatroom){
+  this.chatroom = chatroom;
+}
