@@ -65,9 +65,15 @@ html
             td
               button#to_win To Win
                 
-    #game_area
-      #battle.battle
-        p hello
+    #game_area(onload="abc();" style="display:none;")
+      div#base_table.battleTable
+      
+      #battleChatting
+        ul(id="battleChattingMessage")
+      textarea(id="enterBattleChattingMessage")
+      button(style = "background-color: transparent; border: 0;")
+        img(id="send_battle_message_btn" src="../images/send_message_btn.png")
+
     #result_area
       h1 Result Area
       #show_result

@@ -1,0 +1,48 @@
+.battleTable {
+	position: absolute;
+  	top: 15%;
+}
+
+.moveU {
+	border-left: 15px solid transparent;
+	border-right: 15px solid transparent;
+}
+	
+.moveD {
+	border-left: 15px solid transparent;
+	border-right: 15px solid transparent;
+}
+
+.moveL {
+	border-top: 13px solid transparent;
+	border-bottom: 13px solid transparent;
+}
+
+.moveR {
+	border-top: 13px solid transparent;
+	border-bottom: 13px solid transparent;
+}
+
+#battleChattingMessage {
+	background-color: #FFFFFF;
+	position: absolute;
+  	left: 5%;
+  	top: 80%;
+	width: 500px;
+  	height: 100px;
+}
+
+#enterBattleChattingMessage {
+	background-color: #FFFFFF;
+	position: absolute;
+  	left: 50%;
+  	top: 93%;
+	width: 400px;
+  	height: 30px;
+}
+
+#send_battle_message_btn {
+	position: absolute;
+  	left: 83%;
+  	top: 93%;
+}
