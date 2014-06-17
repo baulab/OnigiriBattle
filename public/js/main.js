@@ -1,59 +1,126 @@
 // DOM controller
-var socket = io();
-var player = new Object;
-var info = {}; // All player info and status
 $(document).ready(function() {
     
+    var socket = io();
+    var info = {}; // All player info and status
+    var player = new Object;
+    init();
+    function init(){
+    	swapTo('index');
+    	events();
+    	conn();
+    }
+    function swapTo(id){
+    	$('#'+id).show();
+    	$('#'+id).siblings().hide();
+    }
+    function events(){
+        $("#loginInfoSubmit").unbind().click(function(){
+	    	$(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');
+	    	swapTo('chatroom');
+	           
+	        player.name = $('#username').val();
+	        player.color = $('#color').val();
+	        socket.emit('init player', player);
+	        $('.room').css('color',player.color);
+            $('#nameSpan').html(player.name);
+            $('#colorSpan').html(player.color);
+	        return false;
+	    });
+	
+	    $("#start_button").unbind().click(function(){
+	      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
+	      swapTo('game_area');
+	    });
+	    
+        $('#send_message_btn').unbind().click(function(e) {
+            socket.emit('chat message', $('#enterMessage').val());
+            $('#enterMessage').val('');
+            return false;
+        });
+        
+        $('#isReady').on('change', function() {
+            socket.emit('update play status', $(this).is(':checked'));
+        });
+        
+        $('#start').unbind().click(function() {
+           $(this).prop('disabled', true);
+        });
+        
+        $('#to_win').unbind().click(function(){
+        	swapTo('result_area');
+        	socket.emit('finish',{win:true});
+        });
+        
+        $('#to_win').unbind().click(function(){
+        	swapTo('result_area');
+        	socket.emit('game finish',{win:true});
+        });
+        
+        $('#restart').unbind().click(function(){
+        	swapTo('chatroom');
+        	socket.emit('chat message','Welcome back to room~');
+        });
 
-    $('form').submit(function(e) {
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
-        return false;
-    });
-    
-    $('#isReady').on('change', function() {
-        socket.emit('update play status', $(this).is(':checked'));
-    });
-    
-    $('#start').click(function() {
-       $(this).prop('disabled', true);
-    });
-    
-    
-    // var player = new Object;
-    // player.name = makeid();
-    // player.color = 'red';
-    
-    // socket.emit('init player', player);
-    
-    socket.on('player joined', function(obj) {
-        // Update host
-        updateHost(obj);        
+        $("#join").click(function() {
+         socket.emit('update play status', true);
+        });
+
+        $("#escape_btn").click(function() {
+         socket.emit('update play status', false);
+        });
+    }
+    function conn(){
+    	socket.on('update play status', function(obj) {
+            // Update host
+            updateHost(obj);
+            
+            // Update all player list
+            // ....
+        });    
         
-        // Notify new player joined
-        //$('#players').append($('<li>').text(obj.newPlayer.name + ' joined'));
-        $('#chattingRoom').text($('#chattingRoom').val() + obj.newPlayer.name + ' joined' + "\r\n");
-    });
-    
-    socket.on('player left', function(obj) {
-        // Update host
-        updateHost(obj);
+        socket.on('chat message', function(msg){
+        	var li=$('<li>');
+        	li.css('color',msg.from.color);
+        	li.text(msg.msg);
+            $('#messages').append(li);
+        });
+    	
+    	socket.on('player joined', function(obj) {
+            // Update host
+            updateHost(obj);        
+            console.log(obj);
+            // Notify new player joined
+            var li=$('<li>');
+            li.css('color',obj.newPlayer.color);
+            li.text(obj.newPlayer.name + ' joined');
+            $('#messages').append(li);
+        });
         
-        //$('#players').append($('<li>').text(obj.exitPlayer.name + ' left'));
-        $('#chattingRoom').text($('#chattingRoom').val() + obj.newPlayer.name + ' left' + "\r\n");
-    })
-    
-    socket.on('update play status', function(obj) {
-        // Update host
-        updateHost(obj);
+        socket.on('player left', function(obj) {
+            console.log('player left');
+            console.log(obj);
+            // Update host
+            updateHost(obj);
+            
+            var li=$('<li>');
+            li.css('color',obj.exitPlayer.color);
+            li.text(obj.exitPlayer.name + ' left');
+            $('#messages').append(li);
+        });
         
-        // Update all player list
-        // ....
-    })    
-    
-    // socket.on('chat message', function(msg){
-    //     $('#messages').append($('<li>').text(msg));
-    // });
+        socket.on('game finish', function(obj){
+        	console.log(obj);
+        	if(obj.updatePlayer.uuid==player.uuid){
+            	if(obj.msg.win){
+            		$('#result_msg').text('You Won!!!');
+            	}else{
+            		$('#result_msg').text('You Lost~~');
+            	}
+            	$('#result_time').text(new Date());	
+        	}
+        });
+    }
     
     function updateHost(obj) {
         // Update info
@@ -101,14 +168,3 @@ $(document).ready(function() {
         
     }
 });
-
-function makeid()
-{
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i=0; i < 5; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-}
