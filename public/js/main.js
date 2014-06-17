@@ -69,6 +69,14 @@ $(document).ready(function() {
         $("#escape_btn").click(function() {
          socket.emit('update play status', false);
         });
+
+        $('#enterMessage').keypress(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+                $('#send_message_btn').click();
+                return false;
+            }
+        });
     }
     function conn(){
     	socket.on('update play status', function(obj) {
