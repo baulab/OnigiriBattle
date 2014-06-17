@@ -22,7 +22,7 @@ $(document).ready(function() {
 	        player.name = $('#username').val();
 	        player.color = $('#color').val();
 	        socket.emit('init player', player);
-	        $('.room').css('color',player.color);
+	        $('.lroom').css('color',player.color);
 	        return false;
 	    });
 	
@@ -30,10 +30,30 @@ $(document).ready(function() {
 	      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
 	      swapTo('game_area');
 	    });
+	    var keyAlt=false;
+	    $('#enterMessage').unbind('keydown').keydown(function(e){
+	    	if(e.keyCode==18){
+	    		keyAlt=true;
+	    	}
+	    });
+	    $('#enterMessage').unbind('keyup').keyup(function(e){
+	    	if(e.keyCode==18){
+	    		keyAlt=false;
+	    	}
+	    	if(e.keyCode==13){
+	    		if(keyAlt==true){
+	    			$('#send_message_btn').click();
+	    			return false;
+	    		}
+	    	}
+	    });
 	    
         $('#send_message_btn').unbind().click(function(e) {
-            socket.emit('chat message', $('#enterMessage').val());
-            $('#enterMessage').val('');
+        	var msg=$('#enterMessage').val().trim();
+        	if(msg.length>0){
+                socket.emit('chat message', $('#enterMessage').val());
+                $('#enterMessage').val('');
+        	}
             return false;
         });
         
@@ -74,6 +94,7 @@ $(document).ready(function() {
         	li.css('color',msg.from.color);
         	li.text(msg.msg);
             $('#messages').append(li);
+            $('#chattingRoom').scrollTop($("#chattingRoom")[0].scrollHeight);;
         });
     	
     	socket.on('player joined', function(obj) {
@@ -92,7 +113,6 @@ $(document).ready(function() {
         });
         
         socket.on('game finish', function(obj){
-        	console.log(obj);
         	if(obj.updatePlayer.uuid==player.uuid){
             	if(obj.msg.win){
             		$('#result_msg').text('You Won!!!');
