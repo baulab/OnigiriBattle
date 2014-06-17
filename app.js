@@ -11,6 +11,8 @@ var express = require('express')
   , path = require('path')
   , socket = require('socket.io');
 
+var gameServer = require('./game.server.js');
+
 var app = express();
 
 // all environments
@@ -83,6 +85,8 @@ io.on('connection', function(socket) {
         console.log(socket.player.name + ': ' + msg);
         io.emit('chat message', {msg:socket.player.name + ': ' + msg, from:socket.player});
     });
+
+    gameServer.onUserConnected(io, socket);
     
     socket.on('game finish', function(obj){
     	io.emit('game finish', {msg:obj,'updatePlayer': socket.player});

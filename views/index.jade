@@ -6,6 +6,7 @@ html
     script(src='/socket.io/socket.io.js')
     script(src='/js/jquery-1.11.1.min.js')
     script(src='/js/main.js')
+    script(src='/js/game.client.js')
     
   body.backClass
     #index.index
@@ -67,6 +68,19 @@ html
                 
     #game_area(onload="abc();" style="display:none;")
       div#base_table.battleTable
+
+      br 
+      br
+      
+      button#test_movie_up up
+      button#test_movie_down down
+      button#test_movie_left left
+      button#test_movie_right right
+      
+      br
+      br
+      button#test_ready ready
+      button#test_start start
       
       #battleChatting
         ul(id="battleChattingMessage")

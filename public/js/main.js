@@ -102,6 +102,8 @@ $(document).ready(function() {
             	$('#result_time').text(new Date());	
         	}
         });
+
+        game.establishConn();
     }
     
     function updateHost(obj) {
