@@ -140,7 +140,7 @@ $(document).ready(function() {
         	}
         });
 
-        game.establishConn();
+        game.establishConn(socket);
     }
     
     function updateHost(obj) {
@@ -167,4 +167,24 @@ $(document).ready(function() {
         //update List
         updatePlayList(obj);
     }
+    
+    function updatePlayList(obj){
+      console.log(obj);
+      $('#friendsList').val('');
+      $('#fightList').val('');
+      var playerList = obj.chatroom.playerList;
+      var fightList = "";
+      var friendsList = "";
+      for(var i in playerList){
+          if(playerList[i].isPlay){
+              fightList += playerList[i].name + "\r\n";
+          }else{
+              friendsList += playerList[i].name + "\r\n";
+          }
+      }
+      $('#fightList').val(fightList);
+      $('#friendsList').val(friendsList);
+      
+  }
+
 });
