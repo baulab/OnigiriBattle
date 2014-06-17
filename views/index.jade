@@ -1,9 +1,12 @@
+doctype html5
 html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/gameColor.css')
     script(src='/js/jquery-1.11.1.min.js')
     script(type='text/javascript' src='/js/main.js')
+    script(type='text/javascript' src='/js/gameMove.js')
     
   body.backClass
     #page0(style="display:show;")
@@ -66,18 +69,11 @@ html
               button(style = "background-color: transparent; border: 0;")
                 img(id="send_message_btn" src="../images/send_message_btn.png")
                 
-    #page2(style="display:none;")
-      #battle.battle
-        p hello
-          
-
-
-
-//extends layout
-
-//block content
-  //h1= title
-  //p Welcome to #{title}
-  
-//body
-  //p #{title}
+    #page2(onload="abc();" style="display:none;")
+      div#base_table.battleTable
+      
+      #battleChatting
+        ul(id="battleChattingMessage")
+      textarea(id="enterBattleChattingMessage")
+      button(style = "background-color: transparent; border: 0;")
+        img(id="send_battle_message_btn" src="../images/send_message_btn.png")
