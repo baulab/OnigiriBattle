@@ -1,9 +1,12 @@
-body {
+html, body {
   background-image: url('../images/origiri_Background.png');
   background-repeat: no-repeat;
-  background-size: 100% 100%; 
-  padding: 50px;
+  background-size: 100% 100%;
+  padding: 0px;
+  margin: 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  height: 100%;
+  min-height:100%;
 }
 
 #page0 {
