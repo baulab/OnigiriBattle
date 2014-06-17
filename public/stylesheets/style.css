@@ -8,18 +8,26 @@ html, body {
   height: 100%;
   min-height:100%;
 }
-
-#page0 {
+ul, li {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+li{
+	margin-left:10px;
+}
+.index {
   padding: 70px;
   text-align: center;
   font-family: Comic Sans MS,arial,helvetica,sans-serif;
 }
 
-#page0 > p {
+.index > p {
   font-size: 32px;
 } 
 
-#page0 > form {
+.index > form {
   font-size: 20px;
 }
 
@@ -32,7 +40,11 @@ html, body {
   font-family: Comic Sans MS,arial,helvetica,sans-serif;
 }
 
-#page1 > table {
+.color{
+	font-weight:bold;	
+}
+
+.chatroom > table {
   position: absolute;
   left: 15%;
   top: 15%;
@@ -40,13 +52,28 @@ html, body {
   text-align: center;
   font-family: Comic Sans MS,arial,helvetica,sans-serif;
 }
-
 .start_btn {
+  background-color: transparent; 
+  border: 0;	
+}
+.start_img {
   position: absolute;
   left: 85%;
   top: 80%;
+  content: url("../images/start_button.png");
 }
-
+.join{
+  content: url("../images/join_arrow.png");
+}
+.escape{
+  content: url("../images/escape_arrow.png");
+}
+.tableRight{
+  width:500px;
+}
+.send_message_btn{
+  content: url("../images/send_message_btn.png");
+}
 #friendsList {
   width: 150px;
   height: 300px;
@@ -57,9 +84,10 @@ html, body {
   height: 300px;
 }
 
-#chattingRoom {
+.room {
   width: 350px;
   height: 265px;
+  background-color:#fff;
 }
 
 #enterMessage {

@@ -42,7 +42,7 @@ io.on('connection', function(socket) {
 
     socket.on('init player', function(player) {
         // Retain new player
-        var newplayer = new Player(player.name, player.color);
+        var newplayer = new Player(player.name, player.color, player.uuid);
         socket.player = newplayer;
         chatroom.addPlayer(newplayer);
 
@@ -81,6 +81,10 @@ io.on('connection', function(socket) {
         }
         
         console.log(socket.player.name + ': ' + msg);
-        io.emit('chat message', socket.player.name + ': ' + msg);
+        io.emit('chat message', {msg:socket.player.name + ': ' + msg, from:socket.player});
+    });
+    
+    socket.on('game finish', function(obj){
+    	io.emit('game finish', {msg:obj,'updatePlayer': socket.player});
     });
 });
