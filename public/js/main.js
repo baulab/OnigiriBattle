@@ -3,7 +3,6 @@ $(document).ready(function() {
     var socket = io();
     var info = {}; // All player info and status
     var player = new Object;
-    
     init();
     function init(){
     	swapTo('index');
@@ -23,6 +22,8 @@ $(document).ready(function() {
 	        player.color = $('#color').val();
 	        socket.emit('init player', player);
 	        $('.lroom').css('color',player.color);
+	        $('#nameSpan').html(player.name);
+            $('#colorSpan').html(player.color);
 	        return false;
 	    });
 	
@@ -30,6 +31,7 @@ $(document).ready(function() {
 	      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
 	      socket.emit('init game');
 	      swapTo('game_area');
+	      abc();
 	    });
 	    var keyAlt=false;
 	    $('#enterMessage').unbind('keydown').keydown(function(e){
@@ -80,6 +82,14 @@ $(document).ready(function() {
         	swapTo('chatroom');
         	socket.emit('chat message','Welcome back to room~');
         });
+        
+        $("#join").click(function() {
+         socket.emit('update play status', true);
+        });
+
+        $("#escape_btn").click(function() {
+         socket.emit('update play status', false);
+        });
     }
     function conn(){
     	socket.on('update play status', function(obj) {
@@ -101,12 +111,17 @@ $(document).ready(function() {
     	socket.on('player joined', function(obj) {
             // Update host
             updateHost(obj);        
-            
+            console.log(obj);
             // Notify new player joined
-            $('#players').append($('<li>').text(obj.newPlayer.name + ' joined'));
+            var li=$('<li>');
+            li.css('color',obj.newPlayer.color);
+            li.text(obj.newPlayer.name + ' joined');
+            $('#messages').append(li);
         });
         
         socket.on('player left', function(obj) {
+            console.log('player left');
+            console.log(obj);
             // Update host
             updateHost(obj);
             
@@ -114,6 +129,7 @@ $(document).ready(function() {
         });
         
         socket.on('game finish', function(obj){
+        	console.log(obj);
         	if(obj.updatePlayer.uuid==player.uuid){
             	if(obj.msg.win){
             		$('#result_msg').text('You Won!!!');
@@ -135,16 +151,20 @@ $(document).ready(function() {
         if (player.name == info.chatroom.host) {
             // Update host
             $('#host').text('host: ' + info.chatroom.host);
-            $('#start').prop('disabled', false);
+            $('#start_btn_span').show();
         } else {
             $('#host').text('host: ' + info.chatroom.host);
-            $('#start').prop('disabled', true);
+            $('#start_btn_span').hide();
         }
         
         // All players checkbox is unchecked.
-        if (!info.chatroom.host) {
-            $('#host').text('host: all players not ready');
-            $('#start').prop('disabled', true);            
+        if (info.chatroom.host==null) {
+            $('#hostSpan').text('');
+            //$('#start_btn_span').prop('disabled', true);            
+            $('#start_btn_span').hide();
         }
+
+        //update List
+        updatePlayList(obj);
     }
 });
