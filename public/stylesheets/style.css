@@ -1,16 +1,71 @@
 body {
-  //padding: 50px;
+  background-image: url('../images/origiri_Background.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%; 
+  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+#page0 {
+  padding: 70px;
+  text-align: center;
+  font-family: Comic Sans MS,arial,helvetica,sans-serif;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-#messages { list-style-type: none; margin: 0; padding: 0; }
-#messages li { padding: 5px 10px; }
-#messages li:nth-child(odd) { background: #eee; }
+#page0 > p {
+  font-size: 32px;
+} 
+
+#page0 > form {
+  font-size: 20px;
+}
+
+#loginInfoSubmit {
+  font-size: 20px;
+}
+
+#nameSpan, #colorSpan {
+  font-size: 20px;
+  font-family: Comic Sans MS,arial,helvetica,sans-serif;
+}
+
+#page1 > table {
+  position: absolute;
+  left: 15%;
+  top: 15%;
+  font-size: 20px;
+  text-align: center;
+  font-family: Comic Sans MS,arial,helvetica,sans-serif;
+}
+
+.start_btn {
+  position: absolute;
+  left: 85%;
+  top: 80%;
+}
+
+#friendsList {
+  width: 150px;
+  height: 300px;
+}
+
+#fightList {
+  width: 150px;
+  height: 300px;
+}
+
+#chattingRoom {
+  width: 350px;
+  height: 265px;
+}
+
+#enterMessage {
+  width: 300px;
+  height: 30px;
+}
+
+.battle {
+  position: absolute;
+  left: 50%;
+  top: 15%;
+}

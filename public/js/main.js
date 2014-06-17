@@ -1,6 +1,9 @@
 // DOM controller
+var socket = io();
+var player = new Object;
+var info = {}; // All player info and status
 $(document).ready(function() {
-    var socket = io();
+    
 
     $('form').submit(function(e) {
         socket.emit('chat message', $('#m').val());
@@ -16,26 +19,28 @@ $(document).ready(function() {
        $(this).prop('disabled', true);
     });
     
-    var info = {}; // All player info and status
-    var player = new Object;
-    player.name = makeid();
-    player.color = 'red';
     
-    socket.emit('init player', player);
+    // var player = new Object;
+    // player.name = makeid();
+    // player.color = 'red';
+    
+    // socket.emit('init player', player);
     
     socket.on('player joined', function(obj) {
         // Update host
         updateHost(obj);        
         
         // Notify new player joined
-        $('#players').append($('<li>').text(obj.newPlayer.name + ' joined'));
+        //$('#players').append($('<li>').text(obj.newPlayer.name + ' joined'));
+        $('#chattingRoom').text($('#chattingRoom').val() + obj.newPlayer.name + ' joined' + "\r\n");
     });
     
     socket.on('player left', function(obj) {
         // Update host
         updateHost(obj);
         
-        $('#players').append($('<li>').text(obj.exitPlayer.name + ' left'));
+        //$('#players').append($('<li>').text(obj.exitPlayer.name + ' left'));
+        $('#chattingRoom').text($('#chattingRoom').val() + obj.newPlayer.name + ' left' + "\r\n");
     })
     
     socket.on('update play status', function(obj) {
@@ -46,9 +51,9 @@ $(document).ready(function() {
         // ....
     })    
     
-    socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg));
-    });
+    // socket.on('chat message', function(msg){
+    //     $('#messages').append($('<li>').text(msg));
+    // });
     
     function updateHost(obj) {
         // Update info
@@ -57,18 +62,43 @@ $(document).ready(function() {
         // Enable/Disable start button if player is host.
         if (player.name == info.chatroom.host) {
             // Update host
-            $('#host').text('host: ' + info.chatroom.host);
-            $('#start').prop('disabled', false);
+            $('#hostSpan').text(info.chatroom.host);
+            //$('#start_btn_span').prop('disabled', false);
+            $('#start_btn_span').show();
         } else {
-            $('#host').text('host: ' + info.chatroom.host);
-            $('#start').prop('disabled', true);
+            $('#hostSpan').text(info.chatroom.host);
+            //$('#start_btn_span').prop('disabled', true);
+            $('#start_btn_span').hide();
         }
         
         // All players checkbox is unchecked.
-        if (!info.chatroom.host) {
-            $('#host').text('host: all players not ready');
-            $('#start').prop('disabled', true);            
+        if (info.chatroom.host==null) {
+            $('#hostSpan').text('');
+            //$('#start_btn_span').prop('disabled', true);            
+            $('#start_btn_span').hide();
         }
+
+        //update List
+        updatePlayList(obj);
+    }
+
+    function updatePlayList(obj){
+        console.log(obj);
+        $('#friendsList').val('');
+        $('#fightList').val('');
+        var playerList = obj.chatroom.playerList;
+        var fightList = "";
+        var friendsList = "";
+        for(var i in playerList){
+            if(playerList[i].isPlay){
+                fightList += playerList[i].name + "\r\n";
+            }else{
+                friendsList += playerList[i].name + "\r\n";
+            }
+        }
+        $('#fightList').val(fightList);
+        $('#friendsList').val(friendsList);
+        
     }
 });
 
