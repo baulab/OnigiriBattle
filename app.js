@@ -81,7 +81,7 @@ io.on('connection', function(socket) {
         }
         
         console.log(socket.player.name + ': ' + msg);
-        io.emit('chat message', socket.player.name + ': ' + msg);
+        io.emit('chat message', {msg:socket.player.name + ': ' + msg, from:socket.player});
     });
     
     socket.on('game finish', function(obj){

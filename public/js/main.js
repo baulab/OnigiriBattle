@@ -74,7 +74,10 @@ $(document).ready(function() {
         })    
         
         socket.on('chat message', function(msg){
-            $('#messages').append($('<li>').text(msg));
+        	var li=$('<li>');
+        	li.css('color',msg.from.color);
+        	li.text(msg.msg);
+            $('#messages').append(li);
         });
     	
     	socket.on('player joined', function(obj) {
