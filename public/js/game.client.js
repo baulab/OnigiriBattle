@@ -1,11 +1,6 @@
 var game = {
-  /**
-   * client uuid
-   */
-  userid : "",
-  
-  establishConn: function(){
-    var socket = io.connect('http://localhost:3000');
+
+  establishConn: function(socket){
     socket.on('move', function (data) {
       console.log(data);
       socket.emit('my other event', { my: 'data' });
@@ -16,12 +11,20 @@ var game = {
       game.setClientUUID(client.id);
     });
     
-    socket.on('startGame', function(){
-      console.log('start');
+    /**
+     * start game response
+     */
+    socket.on('start game', function(chatroom){
+      info = chatroom;
+      swapTo('game_area');
+      abc();
+      initPlayers(chatroom.playerList);
     });
     
+    // broadcast all player info
     socket.on('gamePlayerInfo', function(data){
-      console.log(data);
+      console.log(data.playerList);
+      testUpdatePlayers(data.playerList);
     });
     
     
@@ -31,10 +34,12 @@ var game = {
     
     $('#test_movie_right').click(function(){
       socket.emit('playerMoved', {direct: 'right'});
+      updateMove()
     });
     
     $('#test_movie_left').click(function(){
       socket.emit('playerMoved', {direct: 'left'});
+      updateMove()
     });
     
     $('#test_movie_up').click(function(){
@@ -53,6 +58,7 @@ var game = {
     $('#test_start').click(function(){
       socket.emit('joinGame');
     });
+    
   },
   getClientUUID: function (){
     return this.clientUUID;
@@ -61,5 +67,10 @@ var game = {
     this.clientUUID = uuid;
   }
 };
+
+function swapTo(id) {
+  $('#' + id).show();
+  $('#' + id).siblings().hide();
+}
 
 

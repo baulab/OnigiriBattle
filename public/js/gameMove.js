@@ -1,6 +1,7 @@
 /**
  * New node file
  */
+var colors={};
 function abc(){
 	
 		speed=1;
@@ -10,7 +11,6 @@ function abc(){
 		selfId="ABC";
 		color="#980000";
 		
-		colors={};
 		
 		var table=$('<table></table>').attr("border",1).attr("id","table_map");
 		for(i=1;i<=12;i++){
@@ -84,20 +84,21 @@ function abc(){
 	}
 	
 	function updateMove(name,x,y,direction){
-	
 		$("#table_map").find("tr").eq(y).find("td").eq(x).append($("#"+name));
-		var obj=$("#"+name).removeClass().css({borderTop: "",borderBottom:"", borderLeft: "",borderRight:"" });
+		console.log(colors[name]);
+		var obj=$("#"+name);
+		obj.removeClass().css({borderTop: "", borderBottom:"", borderLeft: "", borderRight:"" });
 		switch(direction){
-			case "U":
+			case "up":
 			obj.addClass("moveU").css("border-bottom","15px solid "+colors[name]);
 			break;
-			case "D":
+			case "down":
 			obj.addClass("moveD").css("border-top","15px solid "+colors[name]);
 			break;
-			case "L":
+			case "left":
 			obj.addClass("moveL").css("border-right","15px solid "+colors[name]);
 			break;
-			case "R":
+			case "right":
 			obj.addClass("moveR").css("border-left","15px solid "+colors[name]);
 			break;
 		}
@@ -115,20 +116,25 @@ function abc(){
 	function checkDiedR(){
 		
 	}
-	function initPlayers(){
-		var details=$("#testObjs").val();
-		var jsonData = $.parseJSON(details);
-		for (var i in jsonData) {
-		var player=jsonData[i];
-			createTriangle(player.id,player.x,player.y,player.color);
-			colors[player.id]=player.color;
+	
+	// init player
+	function initPlayers(datails){
+		//var details=$("#testObjs").val();
+		//var jsonData = $.parseJSON(details);
+		for (var i in datails) {
+		  var player = datails[i];
+			createTriangle(player.name,player.pos.x,player.pos.y,player.color);
+			colors[player.name]=player.color;
 		}
 	}
-	function testUpdatePlayers(){
-		var details=$("#testUpObjs").val();
-		var jsonData = $.parseJSON(details);
-		for (var i in jsonData) {
-		var player=jsonData[i];
-			updateMove(player.id,player.x,player.y,player.direction);
+	
+	// update position
+	function testUpdatePlayers(players){
+		//var details=$("#testUpObjs").val();
+		//var jsonData = $.parseJSON(details);
+		for (var i in players) {
+		  //var player=jsonData[i];
+		  var player = players[i];
+			updateMove(player.name, player.pos.x, player.pos.y, player.direct);
 		}
 	}

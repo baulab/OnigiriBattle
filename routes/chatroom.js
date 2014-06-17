@@ -4,7 +4,7 @@ module.exports = exports = new chatroom;
 
 function chatroom() {
     this.playerList = [];
-    this.host = null;
+    this.host = null; // uuid
     this.isStart = false;
 }
 
@@ -18,7 +18,6 @@ chatroom.prototype.addPlayer = function(player) {
 };
 
 chatroom.prototype.removePlayer = function(name) {
-    delete this.playerList[name];
     var i = 0;
     for (; i < this.playerList.length; i++) {
         if (this.playerList[i].name == name) {

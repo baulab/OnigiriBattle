@@ -7,12 +7,12 @@ var express = require('express')
   , routes = require('./routes')
   , chatroom = require('./routes/chatroom')
   , Player = require('./routes/player')
+  , gameServer = require('./routes/game.server')
   , http = require('http')
   , path = require('path')
-  , socket = require('socket.io');
-
-var gameServer = require('./game.server.js');
-
+  , socket = require('socket.io')
+  , UUID = require('node-uuid');
+  
 var app = express();
 
 // all environments
@@ -41,10 +41,11 @@ var io = socket.listen(server);
 
 io.on('connection', function(socket) {
     console.log('new player connected');
-
+    socket.uuid = UUID();
+    
     socket.on('init player', function(player) {
         // Retain new player
-        var newplayer = new Player(player.name, player.color, player.uuid);
+        var newplayer = new Player(player.name, player.color, socket.uuid, socket);
         socket.player = newplayer;
         chatroom.addPlayer(newplayer);
 
@@ -52,15 +53,17 @@ io.on('connection', function(socket) {
         io.emit('player joined', {'chatroom': chatroom, 'newPlayer': newplayer});
         console.log('player %s joined', newplayer.name);
     });
-
+    
+    gameServer.initGameEvent(io, socket, chatroom);
+    
     socket.on('disconnect', function() {
+      // Remove player from players
         if (!socket.player) {
             // When server crash, client reconnect
             console.log('dead socket disconnected');
             return;
         }
-        
-        // Remove player from players
+
         chatroom.removePlayer(socket.player.name);
         
         // Notify client player left.
@@ -70,6 +73,7 @@ io.on('connection', function(socket) {
     });
     
     socket.on('update play status', function(isPlay) {
+        console.log("player", socket.uuid, "wants play");
         socket.player.setPlay(isPlay);
         chatroom.updatePlayer(socket.player);
         io.emit('update play status', {'chatroom': chatroom, 'updatePlayer': socket.player})
@@ -86,8 +90,6 @@ io.on('connection', function(socket) {
         io.emit('chat message', {msg:socket.player.name + ': ' + msg, from:socket.player});
     });
 
-    gameServer.onUserConnected(io, socket);
-    
     socket.on('game finish', function(obj){
     	io.emit('game finish', {msg:obj,'updatePlayer': socket.player});
     });
