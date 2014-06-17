@@ -1,4 +1,4 @@
-doctype html
+doctype html5
 
 html
   head
@@ -27,7 +27,7 @@ html
         br
         button.start_btn
           img#loginInfoSubmit.start_img
-        
+          
     #chatroom
       span#start_btn_span
         button#start_button.start_btn
@@ -40,8 +40,8 @@ html
         tr
           td(rowspan="2")
             p FRIENDS
-            textarea#friendsList
-
+            #friendsList.lfriends
+              ul#friends
           td(rowspan="2")
             div
             button.start_btn
@@ -51,10 +51,11 @@ html
               img#escape_btn.escape
           td(rowspan="2")
             p FIGHTING
-            textarea#fightList
+            #fightList.lfight
+              ul#fight
           td.tableRight
             p Chatting Room
-            #chattingRoom.room
+            #chattingRoom.lroom
               ul#messages
           tr
             td
@@ -68,6 +69,7 @@ html
     #game_area
       #battle.battle
         p hello
+        
     #result_area
       h1 Result Area
       #show_result

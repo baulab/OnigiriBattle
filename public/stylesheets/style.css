@@ -81,9 +81,18 @@ li{
   height: 300px;
 }
 
-.room {
+.lroom {
   width: 350px;
   height: 265px;
+  overflow: auto;
+  background-color:#fff;
+}
+.lfriends {
+  overflow: auto;
+  background-color:#fff;
+}
+.lfight {
+  overflow: auto;
   background-color:#fff;
 }
 
