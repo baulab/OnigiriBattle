@@ -60,6 +60,15 @@ $(document).ready(function() {
         	swapTo('chatroom');
         	socket.emit('chat message','Welcome back to room~');
         });
+        
+        $('#enterMessage').keypress(function(event){
+        	if(event.keyCode == 13){
+        		socket.emit('chat message', $('#enterMessage').val());
+                $('#enterMessage').val('');
+                return false;
+        	}
+        	
+        });
     }
     function conn(){
     	socket.on('update play status', function(obj) {
