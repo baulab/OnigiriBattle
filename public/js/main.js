@@ -31,6 +31,7 @@ $(document).ready(function() {
 	    $("#start_button").unbind().click(function(){
 	      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
 	      swapTo('game_area');
+	      abc();
 	    });
 	    
         $('#send_message_btn').unbind().click(function(e) {
@@ -128,6 +129,8 @@ $(document).ready(function() {
             	$('#result_time').text(new Date());	
         	}
         });
+
+        game.establishConn();
     }
     
     function updateHost(obj) {
@@ -176,3 +179,4 @@ $(document).ready(function() {
         
     }
 });
+document.write('<script src="gameMove.js"></script>');
