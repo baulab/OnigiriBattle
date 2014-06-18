@@ -124,7 +124,7 @@ gameServer.prototype.onInitGame = function(client) {
 };
 
 gameServer.prototype.onPlayerMoved = function(client, data) {
-  if(this.isPlaying){
+  if(this.isPlaying&&this.games[client.uuid]){
     console.log("\t socket.io:: player:", client.uuid, "action:", data.direct);
     
     var o = this.games[client.uuid];
@@ -163,4 +163,7 @@ gameServer.prototype.onPlayerMoved = function(client, data) {
 
 gameServer.prototype.setChatroom = function(chatroom){
   this.chatroom = chatroom;
+}
+gameServer.prototype.playerOut = function(player){
+    io.sockets.emit('removePlayer', {room:this.chatroom, play:player});
 }
