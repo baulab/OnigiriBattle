@@ -3,6 +3,7 @@ doctype html
 html
   head
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/gameColor.css')
     script(src='/socket.io/socket.io.js')
     script(src='/js/jquery-1.11.1.min.js')
     script(src='/js/gameMove.js')
@@ -67,27 +68,14 @@ html
             td
               button#to_win To Win
                 
-    #game_area(onload="abc();" style="display:none;")
+    #game_area(style="display:none;")
       div#base_table.battleTable
-
-      br 
-      br
-      
-      button#test_movie_up up
-      button#test_movie_down down
-      button#test_movie_left left
-      button#test_movie_right right
-      
-      br
-      br
-      button#test_ready ready
-      button#test_start start
       
       #battleChatting
         ul(id="battleChattingMessage")
-      textarea(id="enterBattleChattingMessage")
-      button(style = "background-color: transparent; border: 0;")
-        img(id="send_battle_message_btn" src="../images/send_message_btn.png")
+        textarea(id="enterBattleChattingMessage" placeholder="enter messages")
+        button(style = "background-color: transparent; border: 0;")
+          img(id="send_battle_message_btn" src="../images/send_message_btn.png")
 
     #result_area
       h1 Result Area

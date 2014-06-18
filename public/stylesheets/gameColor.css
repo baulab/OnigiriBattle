@@ -1,6 +1,7 @@
 .battleTable {
-	position: absolute;
-  	top: 15%;
+	margin: 0px auto;
+	width:900px;
+	padding-top:60px;
 }
 
 .moveU {
@@ -23,26 +24,28 @@
 	border-bottom: 13px solid transparent;
 }
 
-#battleChattingMessage {
-	background-color: #FFFFFF;
-	position: absolute;
+#battleChatting {
+  	position: absolute;
   	left: 5%;
   	top: 80%;
+}
+
+#battleChattingMessage {
+	background-color: #FFFFFF;
 	width: 500px;
   	height: 100px;
+  	float: left;
+  	margin-right:10px;
 }
 
 #enterBattleChattingMessage {
+    clear:both;
 	background-color: #FFFFFF;
-	position: absolute;
-  	left: 50%;
-  	top: 93%;
-	width: 400px;
+	width: 500px;
   	height: 30px;
+  	margin-top: 65px;
 }
 
 #send_battle_message_btn {
-	position: absolute;
-  	left: 83%;
-  	top: 93%;
+	
 }

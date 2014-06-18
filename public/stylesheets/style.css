@@ -44,10 +44,9 @@ li{
 	font-weight:bold;	
 }
 
-.chatroom > table {
-  position: absolute;
-  left: 15%;
-  top: 15%;
+#chatroom > table {
+  margin-left: auto;
+  margin-right: auto;
   font-size: 20px;
   text-align: center;
   font-family: Comic Sans MS,arial,helvetica,sans-serif;
@@ -85,6 +84,7 @@ li{
 }
 
 .room {
+  margin-left: 60px;
   width: 350px;
   height: 265px;
   background-color:#fff;
