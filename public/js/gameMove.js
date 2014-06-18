@@ -116,7 +116,7 @@
     }
     
     function killPlayer(obj){
-        console.log(obj.name+" died");
+        console.log(obj.name+" collide");
     }
 
     // init player
