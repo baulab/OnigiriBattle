@@ -76,6 +76,20 @@ $(document).ready(function() {
         	$('#send_message_btn').click();
             return false;
         }
+    });
+
+    $('#send_battle_message_btn').unbind().click(function(e) {
+      socket.emit('chat message', $('#enterBattleChattingMessage').val());
+      $('#enterBattleChattingMessage').val('');
+      return false;
+    });
+
+    $('#enterBattleChattingMessage').keypress(function(event){
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+          $('#send_battle_message_btn').click();
+            return false;
+        }
     });    
   }
   function conn() {
@@ -92,6 +106,7 @@ $(document).ready(function() {
       li.css('color', msg.from.color);
       li.text(msg.msg);
       $('#messages').append(li);
+      $('#battleChattingMessage').append(li.clone());
     });
 
   	socket.on('player joined', function(obj) {
@@ -103,6 +118,7 @@ $(document).ready(function() {
       li.css('color',obj.newPlayer.color);
       li.text(obj.newPlayer.name + ' joined');
       $('#messages').append(li);
+      $('#battleChattingMessage').append(li.clone());
     });
 
     socket.on('player left', function(obj) {
@@ -115,6 +131,7 @@ $(document).ready(function() {
       li.css('color',obj.exitPlayer.color);
       li.text(obj.exitPlayer.name + ' left');
       $('#messages').append(li);
+      $('#battleChattingMessage').append(li.clone());
     });
 
     socket.on('game finish', function(obj){
