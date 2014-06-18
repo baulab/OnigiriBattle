@@ -28,11 +28,6 @@ var game = {
       testUpdatePlayers(data.playerList);
     });
     
-    
-    socket.on('disconnected', function() {
-      console.log("disconnect player: " + game.getClientUUID());
-    });
-    
     $('#test_movie_right').click(function(){
       socket.emit('playerMoved', {direct: 'right'});
       updateMove()
@@ -49,15 +44,6 @@ var game = {
     
     $('#test_movie_down').click(function(){
       socket.emit('playerMoved', {direct: 'down'});
-    });
-    
-    
-    $('#test_ready').click(function(){
-      socket.emit('ready');
-    });
-    
-    $('#test_start').click(function(){
-      socket.emit('joinGame');
     });
     
   },

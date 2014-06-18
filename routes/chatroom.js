@@ -4,7 +4,7 @@ module.exports = exports = new chatroom;
 
 function chatroom() {
     this.playerList = [];
-    this.host = null; // uuid
+    this.host = null;
     this.isStart = false;
 }
 

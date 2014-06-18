@@ -57,7 +57,6 @@ $(document).ready(function() {
       socket.emit('finish',{win:true});
     });
 
-
     $('#restart').unbind().click(function() {
       swapTo('chatroom');
       socket.emit('chat message', 'Welcome back to room~');

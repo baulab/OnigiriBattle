@@ -3,8 +3,6 @@ module.exports = exports = new gameServer();
 function gameServer() {
   this.games = {};
   this.players = {};
-  this.host ='';
-  this.game_count = 0;
   this.isPlaying = false;
   this.syncInterval = '';
   this.chatroom = {};
@@ -13,7 +11,7 @@ function gameServer() {
 /**
  * Defined common variables
  */
-var syncIntervalTime = 1500;
+var syncIntervalTime = 100;
 var Player = function(playerSocket) {
  
   this.instance = playerSocket;
@@ -74,23 +72,6 @@ gameServer.prototype.initGameEvent = function(sio, client, chatroom) {
   console.log('\t socket.io:: player:' + client.uuid + ' connected.');
   
   /**
-   * modify user info
-   * color:
-   * nickname:
-   */
-  client.on('modifyUserInfo', function(data){
-    that.onModifyUserInfo(client, data);
-  });
-  
-  
-  /**
-   * player ready
-   */
-  client.on('ready', function(){
-    that.onReady(client);
-  });
-  
-  /**
    * join game
    */
   client.on('init game', function() {
@@ -103,13 +84,6 @@ gameServer.prototype.initGameEvent = function(sio, client, chatroom) {
   client.on('playerMoved', function(data) {
     that.onPlayerMoved(client, data);
   });
-
-  /**
-   * Disconnect event
-   */
-  /*client.on('disconnect', function() {
-    o_gameServer.onDisconnected(client);
-  });*/
   
   /**
    * TODO leave, finish game
@@ -120,18 +94,6 @@ gameServer.prototype.initGameEvent = function(sio, client, chatroom) {
   
 
 };
-
-gameServer.prototype.onModifyUserInfo = function(client, data){
-  gameServer.players[client.uuid].color = data.color;
-  gameServer.players[client.uuid].nickname = data.nickname;
-  console.log("\t socket.io:: player:"+client.uuid+" modify info.", "color:", data.color, "nickname", data.nickname);
-};
-
-gameServer.prototype.onReady = function(client){
-  gameServer.players[client.uuid].isReady = true;
-  console.log("\t socket.io:: player:"+client.uuid+" is ready.");
-};
-
 
 gameServer.prototype.onInitGame = function(client) {
   console.log("\t socket.io:: host "+client.uuid+" start game.");
@@ -196,14 +158,6 @@ gameServer.prototype.onPlayerMoved = function(client, data) {
     console.log("\t socket.io:: player: " + client.uuid +
         " new position ( x , y ) = ", "(",o.pos.x,",",o.pos.y,")");
     o.direct = data.direct;
-  }
-};
-
-gameServer.prototype.onDisconnected = function(client) {
-  console.log('\t socket.io:: client disconnected ' + client.uuid);
-  delete this.players[client.uuid];
-  if(gameServer.isPlaying){
-    delete gameServer.games[client.uuid];
   }
 };
 
