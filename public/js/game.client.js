@@ -16,6 +16,7 @@ var game = {
      */
     socket.on('start game', function(chatroom){
       info = chatroom;
+      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
       swapTo('game_area');
       abc();
       initPlayers(chatroom.playerList);
