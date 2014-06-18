@@ -53,10 +53,15 @@ $(document).ready(function() {
       $(this).prop('disabled', true);
     });
     
-    $('#to_win').unbind().click(function() {
+    $('#to_win').unbind('click').click(function() {
       swapTo('result_area');
       socket.emit('finish',{win:true});
-    });
+    }).hide();
+    
+    $('#to_lose').unbind('click').click(function() {
+        swapTo('result_area');
+        socket.emit('finish',{win:false});
+      }).hide();
 
     $('#restart').unbind().click(function() {
       swapTo('chatroom');
@@ -138,12 +143,13 @@ $(document).ready(function() {
     socket.on('game finish', function(obj){
     	console.log(obj);
     	if(obj.updatePlayer.uuid==player.uuid){
-      	if(obj.msg.win){
-      		$('#result_msg').text('You Won!!!');
-      	}else{
-      		$('#result_msg').text('You Lost~~');
-      	}
-      	$('#result_time').text(new Date());	
+            $('window').unbind('keydown');
+          	if(obj.msg.win){
+          		$('#result_msg').text('You Won!!!');
+          	}else{
+          		$('#result_msg').text('You Lost~~');
+          	}
+          	$('#result_time').text(new Date());	
     	}
     });
     

@@ -1,6 +1,7 @@
 var game = {
-
+  list:[],
   establishConn: function(socket){
+      var li=this.list;
     socket.on('move', function (data) {
       console.log(data);
       socket.emit('my other event', { my: 'data' });
@@ -11,23 +12,10 @@ var game = {
       game.setClientUUID(client.id);
     });
     
-    /**
-     * start game response
-     */
-    socket.on('start game', function(chatroom){
-      info = chatroom;
-      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
-      swapTo('game_area');
-      abc();
-      initPlayers(chatroom.playerList);
+    $('#test_attack').click(function(){
+      socket.emit('playerAttack');
     });
     
-    // broadcast all player info
-    socket.on('gamePlayerInfo', function(data){
-      console.log(data.playerList);
-      testUpdatePlayers(data.playerList);
-    });
-
     //broadcast game over and winner info
     socket.on('gameOverAndWinnerInfo', function(data){
       console.log(data);
@@ -36,28 +24,45 @@ var game = {
       $("#result_msg").text("winner: " + data.name);
     });
     
-    $('#test_movie_right').click(function(){
+    /**
+     * start game response
+     */
+    socket.on('start game', function(chatroom){
+      info = chatroom;
+      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
+      swapTo('game_area');
+      abc(socket);
+      initPlayers(chatroom.playerList);
+    });
+    
+    // broadcast all player info
+    socket.on('gamePlayerInfo', function(data){
+      //console.log(data.playerList);
+      if(li.length<1){
+          li=data.playerList;
+      }
+      testUpdatePlayers(data.playerList);
+    });
+    
+    socket.on('removePlayer', function(data){
+        delete data.room.playerList[data.play];
+    })
+    
+    $('#test_movie_right').unbind().click(function(){
       socket.emit('playerMoved', {direct: 'right'});
-      updateMove()
-    });
+    }).hide();
     
-    $('#test_movie_left').click(function(){
+    $('#test_movie_left').unbind().click(function(){
       socket.emit('playerMoved', {direct: 'left'});
-      updateMove()
-    });
+    }).hide();
     
-    $('#test_movie_up').click(function(){
+    $('#test_movie_up').unbind().click(function(){
       socket.emit('playerMoved', {direct: 'up'});
-    });
+    }).hide();
     
-    $('#test_movie_down').click(function(){
+    $('#test_movie_down').unbind().click(function(){
       socket.emit('playerMoved', {direct: 'down'});
-    });
-
-    $('#test_attack').click(function(){
-      socket.emit('playerAttack');
-    });
-    
+    }).hide();
   },
   getClientUUID: function (){
     return this.clientUUID;
@@ -71,5 +76,3 @@ function swapTo(id) {
   $('#' + id).show();
   $('#' + id).siblings().hide();
 }
-
-
