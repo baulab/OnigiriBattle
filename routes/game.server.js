@@ -6,6 +6,7 @@ function gameServer() {
   this.isPlaying = false;
   this.syncInterval = '';
   this.chatroom = {};
+  this.winner = null;
 }
 
 /**
@@ -84,6 +85,13 @@ gameServer.prototype.initGameEvent = function(sio, client, chatroom) {
   client.on('playerMoved', function(data) {
     that.onPlayerMoved(client, data);
   });
+
+  /**
+   * Player attack event
+   */
+  client.on('playerAttack', function() {
+    that.onPlayerAttack(client);
+  });
   
   /**
    * TODO leave, finish game
@@ -116,10 +124,17 @@ gameServer.prototype.onInitGame = function(client) {
   this.isPlaying = true;
   
   /**
-   * broadcast all player info every syncIntervalTime
+   * broadcast all player info every syncIntervalTime until game over
    */
   gameServer.syncInterval = setInterval(function(){
-    io.sockets.emit('gamePlayerInfo', that.chatroom);
+    if (that.isPlaying) {
+      io.sockets.emit('gamePlayerInfo', that.chatroom);
+    }
+    else {
+      console.log("game over");
+      clearInterval(gameServer.syncInterval);
+      io.sockets.emit('gameOverAndWinnerInfo', that.winner);
+    }
   }, syncIntervalTime);
 };
 
@@ -158,6 +173,77 @@ gameServer.prototype.onPlayerMoved = function(client, data) {
     console.log("\t socket.io:: player: " + client.uuid +
         " new position ( x , y ) = ", "(",o.pos.x,",",o.pos.y,")");
     o.direct = data.direct;
+  }
+};
+
+
+gameServer.prototype.onPlayerAttack = function(client) {
+  if(this.isPlaying){
+    console.log("\t socket.io:: player:", client.uuid, "action: attack");
+
+    var o = this.games[client.uuid];
+    console.log("\t socket.io:: player:" , client.uuid,
+        "position ( x , y ) = ", "(",o.pos.x, ",",o.pos.y,")");
+    
+    var x = o.pos.x;
+    var y = o.pos.y;
+    var attackableX, attackableY;
+
+    switch (o.direct) {
+    case 'up':
+      attackableX = x;
+      attackableY = y - 1;
+      break;
+    case 'down':
+      attackableX = x;
+      attackableY = y + 1;
+      break;
+    case 'left':
+      attackableX = x - 1;
+      attackableY = y;
+      break;
+    case 'right':
+      attackableX = x + 1;
+      attackableY = y;
+      break;
+    }
+
+    for (var uuid in this.games) {
+      var player = this.games[uuid];
+      if (player.pos.x == attackableX && player.pos.y == attackableY) {
+          console.log("\t socket.io:: attacked player:" , client.uuid,
+              "position ( x , y ) = ", "(",attackableX, ",",attackableY,") is dead");
+        player.isDead = true;
+        this.checkGameOver();
+        break;
+      }
+    }
+
+  }
+};
+
+
+gameServer.prototype.checkGameOver = function() {
+  var alive = null;
+  var gameOver = true;
+  for (var uuid in this.games) {
+    var player = this.games[uuid];
+    if (player.isDead){
+      continue;
+    }
+    //first one alive: maybe the winner
+    if (alive == null) {
+      alive = player;
+    }
+    //second one alive: game is not over
+    else {
+      gameOver = false;
+      break;
+    }
+    if (gameOver) {
+      this.isPlaying = false;
+      this.winner = alive;
+    }
   }
 };
 

@@ -27,6 +27,14 @@ var game = {
       console.log(data.playerList);
       testUpdatePlayers(data.playerList);
     });
+
+    //broadcast game over and winner info
+    socket.on('gameOverAndWinnerInfo', function(data){
+      console.log(data);
+      $(".backClass").css('background-image', 'url(../images/winner_background.png)');
+      swapTo('result_area');
+      $("#result_msg").text("winner: " + data.name);
+    });
     
     $('#test_movie_right').click(function(){
       socket.emit('playerMoved', {direct: 'right'});
@@ -44,6 +52,10 @@ var game = {
     
     $('#test_movie_down').click(function(){
       socket.emit('playerMoved', {direct: 'down'});
+    });
+
+    $('#test_attack').click(function(){
+      socket.emit('playerAttack');
     });
     
   },

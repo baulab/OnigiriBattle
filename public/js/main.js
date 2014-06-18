@@ -1,3 +1,8 @@
+function swapTo(id) {
+  $('#' + id).show();
+  $('#' + id).siblings().hide();
+}
+
 // DOM controller
 $(document).ready(function() {
 
@@ -9,10 +14,6 @@ $(document).ready(function() {
     swapTo('index');
     events();
     conn();
-  }
-  function swapTo(id) {
-    $('#' + id).show();
-    $('#' + id).siblings().hide();
   }
   function events() {
     $("#loginInfoSubmit").unbind().click(function() {
