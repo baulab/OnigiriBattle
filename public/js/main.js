@@ -1,3 +1,8 @@
+function swapTo(id) {
+  $('#' + id).show();
+  $('#' + id).siblings().hide();
+}
+
 // DOM controller
 $(document).ready(function() {
 
@@ -9,10 +14,6 @@ $(document).ready(function() {
     swapTo('index');
     events();
     conn();
-  }
-  function swapTo(id) {
-    $('#' + id).show();
-    $('#' + id).siblings().hide();
   }
   function events() {
     $("#loginInfoSubmit").unbind().click(function() {
@@ -52,10 +53,15 @@ $(document).ready(function() {
       $(this).prop('disabled', true);
     });
     
-    $('#to_win').unbind().click(function() {
+    $('#to_win').unbind('click').click(function() {
       swapTo('result_area');
       socket.emit('finish',{win:true});
-    });
+    }).hide();
+    
+    $('#to_lose').unbind('click').click(function() {
+        swapTo('result_area');
+        socket.emit('finish',{win:false});
+      }).hide();
 
     $('#restart').unbind().click(function() {
       swapTo('chatroom');
@@ -76,6 +82,20 @@ $(document).ready(function() {
         	$('#send_message_btn').click();
             return false;
         }
+    });
+
+    $('#send_battle_message_btn').unbind().click(function(e) {
+      socket.emit('chat message', $('#enterBattleChattingMessage').val());
+      $('#enterBattleChattingMessage').val('');
+      return false;
+    });
+
+    $('#enterBattleChattingMessage').keypress(function(event){
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+          $('#send_battle_message_btn').click();
+            return false;
+        }
     });    
   }
   function conn() {
@@ -92,6 +112,7 @@ $(document).ready(function() {
       li.css('color', msg.from.color);
       li.text(msg.msg);
       $('#messages').append(li);
+      $('#battleChattingMessage').append(li.clone());
     });
 
   	socket.on('player joined', function(obj) {
@@ -103,6 +124,7 @@ $(document).ready(function() {
       li.css('color',obj.newPlayer.color);
       li.text(obj.newPlayer.name + ' joined');
       $('#messages').append(li);
+      $('#battleChattingMessage').append(li.clone());
     });
 
     socket.on('player left', function(obj) {
@@ -115,17 +137,19 @@ $(document).ready(function() {
       li.css('color',obj.exitPlayer.color);
       li.text(obj.exitPlayer.name + ' left');
       $('#messages').append(li);
+      $('#battleChattingMessage').append(li.clone());
     });
 
     socket.on('game finish', function(obj){
     	console.log(obj);
     	if(obj.updatePlayer.uuid==player.uuid){
-      	if(obj.msg.win){
-      		$('#result_msg').text('You Won!!!');
-      	}else{
-      		$('#result_msg').text('You Lost~~');
-      	}
-      	$('#result_time').text(new Date());	
+            $('window').unbind('keydown');
+          	if(obj.msg.win){
+          		$('#result_msg').text('You Won!!!');
+          	}else{
+          		$('#result_msg').text('You Lost~~');
+          	}
+          	$('#result_time').text(new Date());	
     	}
     });
     

@@ -90,7 +90,8 @@ io.on('connection', function(socket) {
         io.emit('chat message', {msg:socket.player.name + ': ' + msg, from:socket.player});
     });
 
-    socket.on('game finish', function(obj){
+    socket.on('finish', function(obj){
+        gameServer.playerOut(socket.player);
     	io.emit('game finish', {msg:obj,'updatePlayer': socket.player});
     });
 });

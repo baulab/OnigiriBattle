@@ -1,9 +1,14 @@
 .battleTable {
+	margin-top: 50px;
+	width:900px;
+	border-style:solid;
+	border-color:#ff0000;
+}
+.battle_area{
 	margin: 0px auto;
 	width:900px;
 	padding-top:60px;
 }
-
 .moveU {
 	border-left: 15px solid transparent;
 	border-right: 15px solid transparent;
