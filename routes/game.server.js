@@ -115,12 +115,12 @@ gameServer.prototype.onInitGame = function(client) {
 
   this.isPlaying = true;
   
-  // /**
-  //  * broadcast all player info every syncIntervalTime
-  //  */
-  // gameServer.syncInterval = setInterval(function(){
-  //   io.sockets.emit('gamePlayerInfo', that.chatroom);
-  // }, syncIntervalTime);
+  /**
+   * broadcast all player info every syncIntervalTime
+   */
+  gameServer.syncInterval = setInterval(function(){
+    io.sockets.emit('gamePlayerInfo', that.chatroom);
+  }, syncIntervalTime);
 };
 
 gameServer.prototype.onPlayerMoved = function(client, data) {
@@ -158,7 +158,6 @@ gameServer.prototype.onPlayerMoved = function(client, data) {
     console.log("\t socket.io:: player: " + client.uuid +
         " new position ( x , y ) = ", "(",o.pos.x,",",o.pos.y,")");
     o.direct = data.direct;
-    io.sockets.emit('gamePlayerInfo', this.chatroom);
   }
 };
 
