@@ -38,7 +38,7 @@
             key.start = timer.start();
         }
     }
-})(100);
+})(200);
 
 function DeltaTimer(render, interval) {
     var timeout;
