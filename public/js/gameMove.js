@@ -23,9 +23,9 @@
 
         var table = $('<table></table>').attr("id", "table_map").attr('class','battleTable');
         for (i = 1; i <= 12; i++) {
-            var row = $('<tr></tr>').height('30');
+            var row = $('<tr></tr>').height('40');
             for (j = 1; j <= 30; j++) {
-                var column = $('<td></td>').width('30');
+                var column = $('<td></td>').width('40');
                 row.append(column);
             }
             table.append(row);
@@ -35,9 +35,14 @@
 
     }
 
-    function createTriangle(id, x, y, color) {
+//    function createTriangle(id, x, y, color) {
+//        var td = $("#table_map").find("tr").eq(y).find("td").eq(x);
+//        td.append($("<div></div>").addClass("moveU").attr("id", id).css("border-bottom", "15px solid " + color));
+//    }
+    
+    function createCharacter(id, x, y, color) {
         var td = $("#table_map").find("tr").eq(y).find("td").eq(x);
-        td.append($("<div></div>").addClass("moveU").attr("id", id).css("border-bottom", "15px solid " + color));
+        td.append($("<div></div>").addClass("moveU").attr("id", id));
     }
 
     function doKeyDown(evt) {
@@ -71,16 +76,20 @@
         });
         switch (direction) {
         case "up":
-            obj.addClass("moveU").css("border-bottom", "15px solid " + colors[name]);
+            //obj.addClass("moveU").css("border-bottom", "15px solid " + colors[name]);
+            obj.addClass("moveU");
             break;
         case "down":
-            obj.addClass("moveD").css("border-top", "15px solid " + colors[name]);
+            //obj.addClass("moveD").css("border-top", "15px solid " + colors[name]);
+            obj.addClass("moveD");
             break;
         case "left":
-            obj.addClass("moveL").css("border-right", "15px solid " + colors[name]);
+            //obj.addClass("moveL").css("border-right", "15px solid " + colors[name]);
+            obj.addClass("moveL");
             break;
         case "right":
-            obj.addClass("moveR").css("border-left", "15px solid " + colors[name]);
+            //obj.addClass("moveR").css("border-left", "15px solid " + colors[name]);
+            obj.addClass("moveR");
             break;
         }
     }
@@ -122,7 +131,8 @@
     // init player
     function initPlayers(datails) {
         datails.forEach(function(playerObj){
-            createTriangle(playerObj.name, playerObj.pos.x, playerObj.pos.y, playerObj.color);
+            //createTriangle(playerObj.name, playerObj.pos.x, playerObj.pos.y, playerObj.color);
+            createCharacter(playerObj.name, playerObj.pos.x, playerObj.pos.y, playerObj.color);
             colors[playerObj.name] = playerObj.color;
             if(thisPlayer.name == playerObj.name){
                 thisPlayer = playerObj;

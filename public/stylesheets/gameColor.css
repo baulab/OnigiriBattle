@@ -9,24 +9,52 @@
 	width:900px;
 	padding-top:60px;
 }
-.moveU {
+.moveXU {
 	border-left: 15px solid transparent;
 	border-right: 15px solid transparent;
 }
 	
-.moveD {
+.moveXD {
 	border-left: 15px solid transparent;
 	border-right: 15px solid transparent;
 }
 
-.moveL {
+.moveXL {
 	border-top: 13px solid transparent;
 	border-bottom: 13px solid transparent;
 }
 
-.moveR {
+.moveXR {
 	border-top: 13px solid transparent;
 	border-bottom: 13px solid transparent;
+}
+
+.moveU {
+	background: url("../images/captain_america_sprites.png");
+	background-position: -0px -0px; 
+	width: 50px; 
+	height: 50px;
+}
+
+.moveR {
+	background: url("../images/captain_america_sprites.png");
+	background-position: -0px -60px; 
+	width: 50px; 
+	height: 50px;
+}
+
+.moveD {
+	background: url("../images/captain_america_sprites.png");
+	background-position: -0px -120px; 
+	width: 50px; 
+	height: 50px;
+}
+
+.moveL {
+	background: url("../images/captain_america_sprites.png");
+	background-position: -0px -180px; 
+	width: 50px; 
+	height: 50px;
 }
 
 #battleChatting {
