@@ -12,7 +12,7 @@ function gameServer() {
 /**
  * Defined common variables
  */
-var syncIntervalTime = 100;
+var syncIntervalTime = 500;
 var Player = function(playerSocket) {
  
   this.instance = playerSocket;

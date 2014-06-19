@@ -61,7 +61,7 @@ $(document).ready(function() {
     $('#to_lose').unbind('click').click(function() {
         swapTo('result_area');
         socket.emit('finish',{win:false});
-      }).hide();
+    }).hide();
 
     $('#restart').unbind().click(function() {
       swapTo('chatroom');

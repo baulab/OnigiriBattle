@@ -43,6 +43,8 @@ io.on('connection', function(socket) {
     console.log('new player connected');
     socket.uuid = UUID();
     
+    socket.emit('onconnected', {uuid: socket.uuid});
+    
     socket.on('init player', function(player) {
         // Retain new player
         var newplayer = new Player(player.name, player.color, socket.uuid, socket);
