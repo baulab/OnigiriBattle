@@ -12,9 +12,6 @@ var game = {
       game.setClientUUID(client.uuid);
     });
     
-    $('#test_attack').click(function(){
-      socket.emit('playerAttack');
-    });
     
     //broadcast game over and winner info
     socket.on('gameOverAndWinnerInfo', function(data){
