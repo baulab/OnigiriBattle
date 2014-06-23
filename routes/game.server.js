@@ -126,14 +126,15 @@ gameServer.prototype.onInitGame = function(client) {
   /**
    * broadcast all player info every syncIntervalTime until game over
    */
-  gameServer.syncInterval = setInterval(function(){
+  this.syncInterval = setInterval(function(){
     if (that.isPlaying) {
       io.sockets.emit('gamePlayerInfo', that.chatroom);
     }
     else {
       console.log("game over");
-      clearInterval(gameServer.syncInterval);
       io.sockets.emit('gameOverAndWinnerInfo', that.winner);
+      clearInterval(that.syncInterval);
+      that.syncInterval = null;
     }
   }, syncIntervalTime);
 };
