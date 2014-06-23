@@ -128,10 +128,11 @@ gameServer.prototype.onInitGame = function(client) {
    */
   this.syncInterval = setInterval(function(){
     if (that.isPlaying) {
+      that.checkGameOver();
       io.sockets.emit('gamePlayerInfo', that.chatroom);
     }
     else {
-      console.log("game over");
+      console.log("\t game over");
       io.sockets.emit('gameOverAndWinnerInfo', that.winner);
       clearInterval(that.syncInterval);
       that.syncInterval = null;
@@ -215,7 +216,6 @@ gameServer.prototype.onPlayerAttack = function(client) {
           console.log("\t socket.io:: attacked player:" , client.uuid,
               "position ( x , y ) = ", "(",attackableX, ",",attackableY,") is dead");
         player.isDead = true;
-        this.checkGameOver();
         break;
       }
     }
@@ -241,10 +241,10 @@ gameServer.prototype.checkGameOver = function() {
       gameOver = false;
       break;
     }
-    if (gameOver) {
-      this.isPlaying = false;
-      this.winner = alive;
-    }
+  }
+  if (gameOver) {
+    this.isPlaying = false;
+    this.winner = alive;
   }
 };
 
