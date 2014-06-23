@@ -33,9 +33,6 @@ html
           img#loginInfoSubmit.start_img
         
     #chatroom
-      span#start_btn_span
-        button#start_button.start_btn
-          img.start_img
       p name: 
         span#nameSpan Origiri
       p color: 
@@ -65,18 +62,20 @@ html
               textarea#enterMessage(placeholder="enter messages")
               button.start_btn
                 img#send_message_btn.send_message_btn
-          tr
-            td
-              button#to_win To Win
-              button#to_lise To Lose
-                
+          //tr
+          //  td
+          //    button#to_win To Win
+          //    button#to_lise To Lose
+      span#start_btn_span
+        button#start_button.start_btn
+          img.start_img         
     #game_area(style="display:none;")
       div#base_table.battle_area
-      button#test_movie_up up
-      button#test_movie_down down
-      button#test_movie_left left
-      button#test_movie_right right
-      button#test_attack attack
+      //button#test_movie_up up
+      //button#test_movie_down down
+      //button#test_movie_left left
+      //button#test_movie_right right
+      //button#test_attack attack
       #battleChatting
         ul(id="battleChattingMessage")
         textarea(id="enterBattleChattingMessage" placeholder="enter messages")

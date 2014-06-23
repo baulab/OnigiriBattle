@@ -37,7 +37,8 @@ $(document).ready(function() {
     });
 
     $('#send_message_btn').unbind().click(function(e) {
-      socket.emit('chat message', $('#enterMessage').val());
+      var message = $('#enterMessage').val();
+      sendMessage(message);
       $('#enterMessage').val('');
       return false;
     });
@@ -85,7 +86,8 @@ $(document).ready(function() {
     });
 
     $('#send_battle_message_btn').unbind().click(function(e) {
-      socket.emit('chat message', $('#enterBattleChattingMessage').val());
+      var message = $('#enterBattleChattingMessage').val();
+      sendMessage(message);
       $('#enterBattleChattingMessage').val('');
       return false;
     });
@@ -165,18 +167,18 @@ $(document).ready(function() {
           // Update host
           $('#hostSpan').text(info.chatroom.host);
           //$('#start_btn_span').prop('disabled', false);
-          $('#start_btn_span').show();
+          $('#start_button').show();
       } else {
           $('#hostSpan').text(info.chatroom.host);
           //$('#start_btn_span').prop('disabled', true);
-          $('#start_btn_span').hide();
+          $('#start_button').hide();
       }
       
       // All players checkbox is unchecked.
       if (info.chatroom.host==null) {
           $('#hostSpan').text('');
           //$('#start_btn_span').prop('disabled', true);            
-          $('#start_btn_span').hide();
+          $('#start_button').hide();
       }
 
       //update List
@@ -200,6 +202,12 @@ $(document).ready(function() {
       $('#fightList').val(fightList);
       $('#friendsList').val(friendsList);
       
+  }
+
+  function sendMessage(value){
+    if(value!=null && value !="" && typeof(value) !=="undefined"){
+        socket.emit('chat message', value);
+    }
   }
 });
 //document.write('<script src="gameMove.js"></script>');
