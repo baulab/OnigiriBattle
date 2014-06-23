@@ -18,7 +18,8 @@ var game = {
       console.log(data);
       $(".backClass").css('background-image', 'url(../images/winner_background.png)');
       swapTo('result_area');
-      $("#result_msg").text("winner: " + data.name);
+      $("#show_result").text(data.name);
+      $("#show_result").css("color", data.color);
     });
     
     /**
