@@ -39,6 +39,7 @@ $(document).ready(function() {
     $('#send_message_btn').unbind().click(function(e) {
       socket.emit('chat message', $('#enterMessage').val());
       $('#enterMessage').val('');
+      $('#chattingRoom').scrollTop($('#chattingRoom')[0].scrollHeight);
       return false;
     });
     
@@ -61,7 +62,7 @@ $(document).ready(function() {
     $('#to_lose').unbind('click').click(function() {
         swapTo('result_area');
         socket.emit('finish',{win:false});
-      }).hide();
+    }).hide();
 
     $('#restart').unbind().click(function() {
       swapTo('chatroom');
@@ -87,6 +88,7 @@ $(document).ready(function() {
     $('#send_battle_message_btn').unbind().click(function(e) {
       socket.emit('chat message', $('#enterBattleChattingMessage').val());
       $('#enterBattleChattingMessage').val('');
+      $('#battleChattingMessage').scrollTop($('#battleChattingMessage')[0].scrollHeight);
       return false;
     });
 

@@ -3,7 +3,7 @@
      * New node file
      */
     var colors = {};
-    var thisPlayer = {};
+    var myuuid = "";
     var playerList = [];
     var _socket = {};
     function abc(socket) {
@@ -23,45 +23,75 @@
 
         var table = $('<table></table>').attr("id", "table_map").attr('class','battleTable');
         for (i = 1; i <= 12; i++) {
-            var row = $('<tr></tr>').height('40');
+            var row = $('<tr></tr>').height('30');
             for (j = 1; j <= 30; j++) {
-                var column = $('<td></td>').width('40');
+                var column = $('<td></td>').width('30');
                 row.append(column);
             }
             table.append(row);
         }
         $('#base_table').append(table);
-        $(window).unbind('keydown').keydown(doKeyDown);
-
+        //$(window).unbind('keydown').keydown(doKeyDown);
+        window.removeEventListener("keypressed", doKeyDown, false);
+        window.addEventListener("keypressed", doKeyDown, false);
     }
 
-//    function createTriangle(id, x, y, color) {
-//        var td = $("#table_map").find("tr").eq(y).find("td").eq(x);
-//        td.append($("<div></div>").addClass("moveU").attr("id", id).css("border-bottom", "15px solid " + color));
-//    }
-    
-    function createCharacter(id, x, y, color) {
-        var td = $("#table_map").find("tr").eq(y).find("td").eq(x);
-        td.append($("<div></div>").addClass("moveU").attr("id", id));
+    function createTriangle(player) {
+        var td = $("#table_map").find("tr").eq(player.pos.y).find("td").eq(player.pos.x);
+        td.append($("<div></div>").addClass("moveU")
+                .attr({id:player.name, uuid:player.uuid})
+                .css("border-bottom", "15px solid " + player.color));
     }
 
     function doKeyDown(evt) {
-        switch (evt.keyCode) {
-        case 38: /* Up arrow was pressed */
-            $('#test_movie_up').click();
-            return;
-        case 40: /* Down arrow was pressed */
-            $('#test_movie_down').click();
-            return;
-        case 39: /* Right arrow was pressed */
-            $('#test_movie_right').click();
-            return;
-        case 37: /* Left arrow was pressed */
-            $('#test_movie_left').click();
-            return;
+        var playerIndex = findPlayerByUUID(myuuid);
+        if(playerIndex>=0){
+            switch (evt.keyCode) {
+            case 38: /* Up arrow was pressed */
+                _socket.emit('playerMoved', {direct: 'up'});
+                var y = playerList[playerIndex].pos.y;
+                if(y>0){
+                    y--;
+                }
+                updateMove(playerList[playerIndex].name, playerList[playerIndex].pos.x, y, "up", true);
+                break;
+            case 40: /* Down arrow was pressed */
+                _socket.emit('playerMoved', {direct: 'down'});
+                var y = playerList[playerIndex].pos.y;
+                if(y<playerList[playerIndex].pos_limits.y_max){
+                    y++;
+                }
+                updateMove(playerList[playerIndex].name, playerList[playerIndex].pos.x, y, "down", true);
+                break;
+            case 39: /* Right arrow was pressed */
+                _socket.emit('playerMoved', {direct: 'right'});
+                var x = playerList[playerIndex].pos.x;
+                if(x<playerList[playerIndex].pos_limits.x_max){
+                    x++;
+                }
+                updateMove(playerList[playerIndex].name, x, playerList[playerIndex].pos.y, "right", true);
+                break;
+            case 37: /* Left arrow was pressed */
+                _socket.emit('playerMoved', {direct: 'left'});
+                var x = playerList[playerIndex].pos.x;
+                if(x>0){
+                    x--;
+                }
+                updateMove(playerList[playerIndex].name, x, playerList[playerIndex].pos.y, "left", true);
+                break;
+            }
         }
     }
-
+    
+    function findPlayerByUUID(uuid){
+        for(var i=0; i<playerList.length; i++){
+            if(playerList[i].uuid == uuid){
+                return i;
+            }
+        }
+        return -1;
+    }
+    
     function updateMove(name, x, y, direction, isplay) {
         if(isplay&&!checkCollide(name, x, y, direction, isplay)){
             return;
@@ -76,20 +106,16 @@
         });
         switch (direction) {
         case "up":
-            //obj.addClass("moveU").css("border-bottom", "15px solid " + colors[name]);
-            obj.addClass("moveU");
+            obj.addClass("moveU").css("border-bottom", "15px solid " + colors[name]);
             break;
         case "down":
-            //obj.addClass("moveD").css("border-top", "15px solid " + colors[name]);
-            obj.addClass("moveD");
+            obj.addClass("moveD").css("border-top", "15px solid " + colors[name]);
             break;
         case "left":
-            //obj.addClass("moveL").css("border-right", "15px solid " + colors[name]);
-            obj.addClass("moveL");
+            obj.addClass("moveL").css("border-right", "15px solid " + colors[name]);
             break;
         case "right":
-            //obj.addClass("moveR").css("border-left", "15px solid " + colors[name]);
-            obj.addClass("moveR");
+            obj.addClass("moveR").css("border-left", "15px solid " + colors[name]);
             break;
         }
     }
@@ -129,28 +155,28 @@
     }
 
     // init player
-    function initPlayers(datails) {
+    function initPlayers(datails, uuid) {
+        console.log("\t my uuid:", uuid);
+        myuuid = uuid;
         datails.forEach(function(playerObj){
-            //createTriangle(playerObj.name, playerObj.pos.x, playerObj.pos.y, playerObj.color);
-            createCharacter(playerObj.name, playerObj.pos.x, playerObj.pos.y, playerObj.color);
+            createTriangle(playerObj);
             colors[playerObj.name] = playerObj.color;
-            if(thisPlayer.name == playerObj.name){
-                thisPlayer = playerObj;
-            }
         });
     }
 
     // update position
-    function testUpdatePlayers(players) {
+    function updatePlayersPos(players) {
         playerList=players;
+        //console.log("\t updatePlayersPos", playerList);
         for ( var i in players) {
-            //var player=jsonData[i];
             var player = players[i];
-            updateMove(player.name, player.pos.x, player.pos.y, player.direct, player.isPlay);
+            if(player.uuid!=myuuid){
+                updateMove(player.name, player.pos.x, player.pos.y, player.direct, player.isPlay);
+            }
         }
     }
     
     window.abc=abc;
     window.initPlayers=initPlayers;
-    window.testUpdatePlayers=testUpdatePlayers;
+    window.updatePlayersPos=updatePlayersPos;
 })();
