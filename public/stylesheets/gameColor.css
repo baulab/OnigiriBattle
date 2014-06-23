@@ -9,25 +9,163 @@
 	width:900px;
 	padding-top:60px;
 }
-.moveU {
+.moveXU {
 	border-left: 15px solid transparent;
 	border-right: 15px solid transparent;
 }
 	
-.moveD {
+.moveXD {
 	border-left: 15px solid transparent;
 	border-right: 15px solid transparent;
 }
 
-.moveL {
+.moveXL {
 	border-top: 13px solid transparent;
 	border-bottom: 13px solid transparent;
 }
 
-.moveR {
+.moveXR {
 	border-top: 13px solid transparent;
 	border-bottom: 13px solid transparent;
 }
+
+
+.move {
+	background-image:url('../images/origiri_sprites.png');
+	width: 50px; 
+	height: 50px;
+}
+
+.moveBlackD {	
+	background-position: -0px -0px;
+}
+
+.moveBlackL {
+	background-position: -0px -100px; 
+}
+
+.moveBlackR {
+	background-position: -0px -200px; 
+}
+
+.moveBlackU {	
+	background-position: -0px -300px;
+}
+
+.moveBlueD {	
+	background-position: -0px -400px;
+}
+
+.moveBlueL {
+	background-position: -0px -500px; 
+}
+
+.moveBlueR {
+	background-position: -0px -600px; 
+}
+
+.moveBlueU {	
+	background-position: -0px -700px;
+}
+
+.moveGreenD {	
+	background-position: -0px -800px;
+}
+
+.moveGreenL {
+	background-position: -0px -900px; 
+}
+
+.moveGreenR {
+	background-position: -0px -1000px; 
+}
+
+.moveGreenU {	
+	background-position: -0px -1100px;
+}
+
+.moveOrangeD {	
+	background-position: -0px -1200px;
+}
+
+.moveOrangeL {
+	background-position: -0px -1300px; 
+}
+
+.moveOrangeR {
+	background-position: -0px -1400px; 
+}
+
+.moveOrangeU {	
+	background-position: -0px -1500px;
+}
+
+.movePinkD {	
+	background-position: -0px -1600px;
+}
+
+.movePinkL {
+	background-position: -0px -1700px; 
+}
+
+.movePinkR {
+	background-position: -0px -1800px; 
+}
+
+.movePinkU {	
+	background-position: -0px -1900px;
+}
+
+.movePurpleD {	
+	background-position: -100px -0px;
+}
+
+.movePurpleL {
+	background-position: -100px -100px; 
+}
+
+.movePurpleR {
+	background-position: -100px -200px; 
+}
+
+.movePurpleU {	
+	background-position: -100px -300px;
+}
+
+.moveRedD {	
+	background-position: -100px -400px;
+}
+
+.moveRedL {
+	background-position: -100px -500px; 
+}
+
+.moveRedR {
+	background-position: -100px -600px; 
+}
+
+.moveRedU {	
+	background-position: -100px -700px;
+}
+
+.moveYellowD {	
+	background-position: -100px -800px;
+}
+
+.moveYellowL {
+	background-position: -100px -900px; 
+}
+
+.moveYellowR {
+	background-position: -100px -1000px; 
+}
+
+.moveYellowU {	
+	background-position: -100px -1100px;
+}
+
+
+
 
 #battleChatting {
   	position: absolute;

@@ -37,10 +37,27 @@
     }
 
     function createTriangle(player) {
+        var characterColor = "";
+        if(player.color=='black'){
+            characterColor = 'moveBlackU';
+        }else if(player.color=='blue'){
+            characterColor = 'moveBlueU'
+        }else if(player.color=='green'){
+            characterColor = 'moveGreenU'
+        }else if(player.color=='orange'){
+            characterColor = 'moveOrangeU'
+        }else if(player.color=='pink'){
+            characterColor = 'movePinkU'
+        }else if(player.color=='purple'){
+            characterColor = 'movePurpleU'
+        }else if(player.color=='red'){
+            characterColor = 'moveRedU'
+        }else if(player.color=='yellow'){
+            characterColor = 'moveYellowU'
+        }
         var td = $("#table_map").find("tr").eq(player.pos.y).find("td").eq(player.pos.x);
-        td.append($("<div></div>").addClass("moveU")
-                .attr({id:player.name, uuid:player.uuid})
-                .css("border-bottom", "15px solid " + player.color));
+        td.append($("<div></div>").addClass("move " + characterColor)
+                .attr({id:player.name, uuid:player.uuid}));
     }
 
     function doKeyDown(evt) {
@@ -93,6 +110,7 @@
     }
     
     function updateMove(name, x, y, direction, isplay) {
+        var characterColor = "";
         if(isplay&&!checkCollide(name, x, y, direction, isplay)){
             return;
         }
@@ -104,18 +122,40 @@
             borderLeft : "",
             borderRight : ""
         });
+        
+        if(colors[name] == "black"){
+            characterColor = "moveBlack";
+        }else if(colors[name]=='blue'){
+            characterColor = 'moveBlue'
+        }else if(colors[name]=='green'){
+            characterColor = 'moveGreen'
+        }else if(colors[name]=='orange'){
+            characterColor = 'moveOrange'
+        }else if(colors[name]=='pink'){
+            characterColor = 'movePink'
+        }else if(colors[name]=='purple'){
+            characterColor = 'movePurple'
+        }else if(colors[name]=='red'){
+            characterColor = 'moveRed'
+        }else if(colors[name]=='yellow'){
+            characterColor = 'moveYellow'
+        }
         switch (direction) {
         case "up":
-            obj.addClass("moveU").css("border-bottom", "15px solid " + colors[name]);
+            //obj.addClass("moveU").css("border-bottom", "15px solid " + colors[name]);
+            obj.addClass("move " +characterColor+ "U");
             break;
         case "down":
-            obj.addClass("moveD").css("border-top", "15px solid " + colors[name]);
+            //obj.addClass("moveD").css("border-top", "15px solid " + colors[name]);
+            obj.addClass("move " +characterColor+ "D");
             break;
         case "left":
-            obj.addClass("moveL").css("border-right", "15px solid " + colors[name]);
+            //obj.addClass("moveL").css("border-right", "15px solid " + colors[name]);
+            obj.addClass("move " +characterColor+ "L");
             break;
         case "right":
-            obj.addClass("moveR").css("border-left", "15px solid " + colors[name]);
+            //obj.addClass("moveR").css("border-left", "15px solid " + colors[name]);
+            obj.addClass("move " +characterColor+ "R");
             break;
         }
     }

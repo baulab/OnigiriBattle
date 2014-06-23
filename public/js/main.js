@@ -167,18 +167,18 @@ $(document).ready(function() {
           // Update host
           $('#hostSpan').text(info.chatroom.host);
           //$('#start_btn_span').prop('disabled', false);
-          $('#start_btn_span').show();
+          $('#start_btn_td').show();
       } else {
           $('#hostSpan').text(info.chatroom.host);
           //$('#start_btn_span').prop('disabled', true);
-          $('#start_btn_span').hide();
+          $('#start_btn_td').hide();
       }
       
       // All players checkbox is unchecked.
       if (info.chatroom.host==null) {
           $('#hostSpan').text('');
           //$('#start_btn_span').prop('disabled', true);            
-          $('#start_btn_span').hide();
+          $('#start_btn_td').hide();
       }
 
       //update List
