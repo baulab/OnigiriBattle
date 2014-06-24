@@ -11,11 +11,30 @@ $(document).ready(function() {
   var player = new Object;
   init();
   function init() {
+    initColor();
     swapTo('index');
     events();
     conn();
     $('#friendsList, #fightList').attr('readonly', 'readonly');
   }
+
+  function initColor(){
+      socket.emit('color list');
+      socket.on('update color', function(obj) {
+          console.log(obj);
+          var list = obj.clr;
+          for(var i in list){
+              $('#color option[value="'+list[i]+'"]').remove();
+          }
+          if($('#color option').length<1){
+              if(!player.name){
+                  alert('Game is full~ Please try to refresh later...');
+                  $('#loginInfoSubmit').remove();
+              }
+          }
+      });
+  }
+  
   function events() {
     $("#loginInfoSubmit").unbind().click(function() {
       $(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');
@@ -111,7 +130,7 @@ $(document).ready(function() {
     function directTxt(msg){
         var arr = msg.split(' ');
         var to  = arr.shift();
-        msg = player.name + ' to ' + to.substring(1, to.length) + ': ' + arr.join(' ');
+        msg = player.name + '->' + to.substring(1, to.length) + ': ' + arr.join(' ');
         return msg;
     }
   }
@@ -129,6 +148,11 @@ $(document).ready(function() {
       li.css('color', msg.from.color);
       li.text(msg.msg);
       $('.disp_messages').append(li);
+      var cont = $('.disp_messages').parent();
+      for( var obj in cont){
+          console.log(obj);
+          $(cont).scrollTop($(cont)[0].scrollHeight);
+      }
     });
 
   	socket.on('player joined', function(obj) {

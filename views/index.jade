@@ -21,13 +21,7 @@ html
         label Character: 
         select#color.color(name="character")
           option(value="red" style="color:red") Red
-          option(value="yellow" style="color:yellow") Yellow
-          option(value="blue" style="color:blue") Blue
-          option(value="purple" style="color:purple") Purple
-          option(value="black" style="color:black") Black
-          option(value="green" style="color:green") Green
-          option(value="pink" style="color:pink") Pink
-          option(value="orange" style="color:orange") Orange        
+          option(value="yellow" style="color:yellow") Yellow    
         br
         button.start_btn
           img#loginInfoSubmit.start_img
@@ -62,20 +56,11 @@ html
               textarea#enterMessage(placeholder="enter messages")
               button.start_btn
                 img#send_message_btn.send_message_btn
-          //tr
-          //  td
-          //    button#to_win To Win
-          //    button#to_lise To Lose
       span#start_btn_span
         button#start_button.start_btn
           img.start_img         
     #game_area(style="display:none;")
       div#base_table.battle_area
-      //button#test_movie_up up
-      //button#test_movie_down down
-      //button#test_movie_left left
-      //button#test_movie_right right
-      //button#test_attack attack
       #battleChatting
         ul#battleChattingMessage.disp_messages
         textarea(id="enterBattleChattingMessage" placeholder="enter messages")
