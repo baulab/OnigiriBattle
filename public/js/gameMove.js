@@ -79,6 +79,10 @@
                 }
                 updateMove(playerList[playerIndex].name, x, playerList[playerIndex].pos.y, "left", true);
                 break;
+            case 32: /* space was pressed */
+                console.log(evt.keyCode);
+                _socket.emit('playerAttack');
+                break;
             }
         }
     }

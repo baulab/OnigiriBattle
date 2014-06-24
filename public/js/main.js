@@ -85,6 +85,7 @@ $(document).ready(function() {
     $('#restart').unbind().click(function() {
       swapTo('chatroom');
       socket.emit('chat message', 'Welcome back to room~');
+      $(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');      
     });
     
     $("#join").click(function() {
