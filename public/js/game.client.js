@@ -1,14 +1,10 @@
 var game = {
   list:[],
-  directions: {37: 'left', 38: 'up', 39: 'right', 40: 'down'},
+  directions: {32: 'attack', 37: 'left', 38: 'up', 39: 'right', 40: 'down'},
   socket: {},
+
   establishConn: function(socket){
-      game.socket = socket;
-      var li=this.list;
-    socket.on('move', function (data) {
-      console.log(data);
-      socket.emit('my other event', { my: 'data' });
-    });
+    game.socket = socket;
     
     socket.on('onconnected', function(client){
       console.log("player: " + client.uuid);
@@ -35,27 +31,18 @@ var game = {
       $(window).on('keydown', function(event) {
           if (game.directions.hasOwnProperty(event.keyCode)) {
             var direction = game.directions[event.keyCode];
-            game.socket.emit('playerMoved', {direct: direction});
-            // drawing.drawPlayers(info.playerList, game.directions[event.keyCode]);
+            if (direction == 'attack') {
+              game.socket.emit('playerAttack');
+            } else {
+              game.socket.emit('playerMoved', {direct: direction});
+            }
           }
       });
-//      $(window).on('keyup', game.stop(event));
       
       $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
       swapTo('game_area');
-//      abc(socket);
       game.initPlayer(chatroom.playerList);
       console.log("\t on start game", game.getClientUUID());
-//      initPlayers(chatroom.playerList, game.getClientUUID());
-    });
-    
-    // broadcast all player info
-    socket.on('gamePlayerInfo', function(data){
-      //console.log(data.playerList);
-      if(li.length<1){
-          li=data.playerList;
-      }
-      updatePlayersPos(data.playerList);
     });
     
     socket.on('removePlayer', function(data){
@@ -87,6 +74,8 @@ function swapTo(id) {
   $('#' + id).siblings().hide();
 }
 
+
+// Draw by cavans
 var drawing = {
     drawMap: function() {
         
@@ -113,32 +102,32 @@ var drawing = {
     },
     
     drawMoving: function(ctx, x, y, direction) {
-        var aStep = 0;  // pixels per step
+        var oneStep = 0;  // pixels per step
         var offset = 8; // size unit of Onigiri 
         switch(direction) {
         case 'left': //left
-            ctx.moveTo(x-aStep, y);
-            ctx.lineTo(x-aStep, y-offset);
-            ctx.lineTo(x-aStep-offset, y);
-            ctx.lineTo(x-aStep, y+offset);
+            ctx.moveTo(x-oneStep, y);
+            ctx.lineTo(x-oneStep, y-offset);
+            ctx.lineTo(x-oneStep-offset, y);
+            ctx.lineTo(x-oneStep, y+offset);
             break;
         case 'up': //up
-            ctx.moveTo(x, y-aStep);
-            ctx.lineTo(x-offset, y-aStep);
-            ctx.lineTo(x, y-offset-aStep);
-            ctx.lineTo(x+offset, y-aStep);
+            ctx.moveTo(x, y-oneStep);
+            ctx.lineTo(x-offset, y-oneStep);
+            ctx.lineTo(x, y-offset-oneStep);
+            ctx.lineTo(x+offset, y-oneStep);
             break;
         case 'right': //right
-            ctx.moveTo(x+aStep, y);
-            ctx.lineTo(x+aStep, y-offset);
-            ctx.lineTo(x+offset+aStep, y);
-            ctx.lineTo(x+aStep, y+offset);
+            ctx.moveTo(x+oneStep, y);
+            ctx.lineTo(x+oneStep, y-offset);
+            ctx.lineTo(x+offset+oneStep, y);
+            ctx.lineTo(x+oneStep, y+offset);
             break;
         case 'down': //down
-            ctx.moveTo(x, y+aStep);
-            ctx.lineTo(x+offset, y+aStep);
-            ctx.lineTo(x, y+offset+aStep);
-            ctx.lineTo(x-offset, y+aStep);
+            ctx.moveTo(x, y+oneStep);
+            ctx.lineTo(x+offset, y+oneStep);
+            ctx.lineTo(x, y+offset+oneStep);
+            ctx.lineTo(x-offset, y+oneStep);
             break;
         default:
             // init

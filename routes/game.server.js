@@ -12,55 +12,7 @@ function gameServer() {
 /**
  * Defined common variables
  */
-var syncIntervalTime = 500;
-var Player = function(playerSocket) {
- 
-  this.instance = playerSocket;
-
-  // Set up initial values for our state information
-  this.pos = {
-    x : 0,
-    y : 0
-  };
-
-  this.color = 'rgba(255,255,255,0.1)';
-  this.nickname = '';
-  this.uuid = '';
-  this.direct = '';
-  
-  this.old_state = {
-    pos : {
-      x : 0,
-      y : 0
-    }
-  };
-  
-  this.isReady = false;
-  this.isDead = false;
-
-  // Our local history of inputs
-  this.inputs = [];
-
-  // position limits
-  this.pos_limits = {
-    x_min : 8,
-    x_max : 391,
-    y_min : 8,
-    y_max : 391
-  };
-  
-  // initial player information
-  if (this.instance) {
-    this.pos = {
-      x : Math.floor(Math.random() * (this.pos_limits.x_max - this.pos_limits.x_min + 1)) + this.pos_limits.x_min,
-      y : Math.floor(Math.random() * (this.pos_limits.y_max - this.pos_limits.y_min + 1)) + this.pos_limits.y_min,
-    };
-    this.uuid = this.instance.uuid;
-  }
-
-}; // game_player.constructor
-
-
+var oneStep = 8; // pixels per step
 var io; // socket io from app.js
 /**
  * socket io enter point
@@ -122,23 +74,6 @@ gameServer.prototype.onInitGame = function(client) {
   io.sockets.emit('start game', that.chatroom);
 
   this.isPlaying = true;
-  
-  /**
-   * broadcast all player info every syncIntervalTime until game over
-   */
-  // this.syncInterval = setInterval(function(){
-  //   if (that.isPlaying) {
-  //     that.checkGameOver();
-  //     io.sockets.emit('gamePlayerInfo', that.chatroom);
-  //   }
-  //   else {
-  //     // Developing, don't go game over
-  //     // console.log("\t game over");
-  //     // io.sockets.emit('gameOverAndWinnerInfo', that.winner);
-  //     // clearInterval(that.syncInterval);
-  //     // that.syncInterval = null;
-  //   }
-  // }, syncIntervalTime);
 };
 
 gameServer.prototype.onPlayerMoved = function(client, data) {
@@ -151,26 +86,25 @@ gameServer.prototype.onPlayerMoved = function(client, data) {
     console.log("\t socket.io:: player:" , client.uuid,
         "old position ( x , y ) = ", "(",o.old_pos.x, ",",o.old_pos.y,")");
     
-    var aStep = 8; // pixels per step
     switch(data.direct){
     case 'up':
-      if((o.pos.y-aStep)>=o.pos_limits.y_min){
-        o.pos.y -= aStep;
+      if((o.pos.y-oneStep)>=o.pos_limits.y_min){
+        o.pos.y -= oneStep;
       }
       break;
     case 'down':
-      if((o.pos.y+aStep)<=o.pos_limits.y_max){
-        o.pos.y += aStep;
+      if((o.pos.y+oneStep)<=o.pos_limits.y_max){
+        o.pos.y += oneStep;
       }
       break;
     case 'left':
-      if((o.pos.x-aStep)>=o.pos_limits.x_min){
-        o.pos.x -= aStep;;
+      if((o.pos.x-oneStep)>=o.pos_limits.x_min){
+        o.pos.x -= oneStep;;
       }
       break;
     case 'right':
-      if((o.pos.x+aStep)<=o.pos_limits.x_max){
-        o.pos.x += aStep;;
+      if((o.pos.x+oneStep)<=o.pos_limits.x_max){
+        o.pos.x += oneStep;;
       }
       break;
     }
@@ -198,18 +132,18 @@ gameServer.prototype.onPlayerAttack = function(client) {
     switch (o.direct) {
     case 'up':
       attackableX = x;
-      attackableY = y - 1;
+      attackableY = y - oneStep;
       break;
     case 'down':
       attackableX = x;
-      attackableY = y + 1;
+      attackableY = y + oneStep;
       break;
     case 'left':
-      attackableX = x - 1;
+      attackableX = x - oneStep;
       attackableY = y;
       break;
     case 'right':
-      attackableX = x + 1;
+      attackableX = x + oneStep;
       attackableY = y;
       break;
     }
