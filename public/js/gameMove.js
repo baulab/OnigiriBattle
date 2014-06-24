@@ -33,7 +33,9 @@
         $('#base_table').append(table);
         //$(window).unbind('keydown').keydown(doKeyDown);
         window.removeEventListener("keypressed", doKeyDown, false);
+        window.removeEventListener("keypressed", doKeyUp, false);
         window.addEventListener("keypressed", doKeyDown, false);
+        window.addEventListener("keypressed", doKeyUp, false);
     }
 
     function createTriangle(player) {
@@ -42,13 +44,26 @@
                 .attr({id:player.name, uuid:player.uuid})
                 .css("border-bottom", "15px solid " + player.color));
     }
+    
+    var isRunning = false;
+    var event;
+    
+    function doKeyUp(evt) {
+        if (event == evt) {
+            isRunning = false;
+        }
+    }
 
     function doKeyDown(evt) {
+        if (isRunning) return;
+        
+        event = evt;
+        isRunning = true;
+        
         var playerIndex = findPlayerByUUID(myuuid);
         if(playerIndex>=0){
             switch (evt.keyCode) {
             case 38: /* Up arrow was pressed */
-                _socket.emit('playerMoved', {direct: 'up'});
                 var y = playerList[playerIndex].pos.y;
                 if(y>0){
                     y--;
@@ -56,7 +71,6 @@
                 updateMove(playerList[playerIndex].name, playerList[playerIndex].pos.x, y, "up", true);
                 break;
             case 40: /* Down arrow was pressed */
-                _socket.emit('playerMoved', {direct: 'down'});
                 var y = playerList[playerIndex].pos.y;
                 if(y<playerList[playerIndex].pos_limits.y_max){
                     y++;
@@ -64,7 +78,6 @@
                 updateMove(playerList[playerIndex].name, playerList[playerIndex].pos.x, y, "down", true);
                 break;
             case 39: /* Right arrow was pressed */
-                _socket.emit('playerMoved', {direct: 'right'});
                 var x = playerList[playerIndex].pos.x;
                 if(x<playerList[playerIndex].pos_limits.x_max){
                     x++;
@@ -72,7 +85,6 @@
                 updateMove(playerList[playerIndex].name, x, playerList[playerIndex].pos.y, "right", true);
                 break;
             case 37: /* Left arrow was pressed */
-                _socket.emit('playerMoved', {direct: 'left'});
                 var x = playerList[playerIndex].pos.x;
                 if(x>0){
                     x--;
@@ -92,10 +104,21 @@
         return -1;
     }
     
+    var temp = {name : "", x : "", y: "", direction: ""};
+    
     function updateMove(name, x, y, direction, isplay) {
         if(isplay&&!checkCollide(name, x, y, direction, isplay)){
             return;
         }
+        
+        if (temp.name == name && temp.x == x && temp.y == y && temp.direction == direction) {
+            return;
+        }
+        
+        console.log("update move: %s, %s, (%s, %s)", name, direction, x, y);
+        _socket.emit('playerMoved', {direct: direction});
+        temp = {name: name, x: x, y: y, direction: direction};
+        
         $("#table_map").find("tr").eq(y).find("td").eq(x).append($("#" + name));
         var obj = $("#" + name);
         obj.removeClass().css({
@@ -119,10 +142,11 @@
             break;
         }
     }
-
+    var xxx = 0;
     function checkCollide(name, x, y, direct, isplay) {
         var result=true;
         playerList.forEach(function(obj){
+            console.log(++xxx);
             if(obj.isPlay&&name != obj.name){
                 if(obj.pos.x==x&&obj.pos.y==y){
                     var kill=false;

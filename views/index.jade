@@ -71,12 +71,10 @@ html
               button#to_lise To Lose
                 
     #game_area(style="display:none;")
-      div#base_table.battle_area
-      button#test_movie_up up
-      button#test_movie_down down
-      button#test_movie_left left
-      button#test_movie_right right
-      button#test_attack attack
+      //div#base_table.battle_area
+      canvas#map(width="400" height="400")
+      
+      
       #battleChatting
         ul(id="battleChattingMessage")
         textarea(id="enterBattleChattingMessage" placeholder="enter messages")

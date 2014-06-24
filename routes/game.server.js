@@ -43,10 +43,10 @@ var Player = function(playerSocket) {
 
   // position limits
   this.pos_limits = {
-    x_min : 0,
-    x_max : 29,
-    y_min : 0,
-    y_max : 15
+    x_min : 8,
+    x_max : 391,
+    y_min : 8,
+    y_max : 391
   };
   
   // initial player information
