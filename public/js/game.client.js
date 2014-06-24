@@ -1,6 +1,8 @@
 var game = {
   list:[],
+  socket: {},
   establishConn: function(socket){
+      this.socket = socket;
       var li=this.list;
     socket.on('move', function (data) {
       console.log(data);
@@ -29,6 +31,9 @@ var game = {
      */
     socket.on('start game', function(chatroom){
       info = chatroom;
+      $(window).on('keydown', game.run());
+      $(window).on('keyup', game.stop());
+      
       $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
       swapTo('game_area');
 //      abc(socket);
@@ -61,8 +66,16 @@ var game = {
   
   initPlayer: function(playerList) {
       // Draw players
-      battlefield.drawPlayers(playerList);
-  }  
+      drawing.drawPlayers(playerList);
+  },
+  
+  run: function() {
+      
+  },
+  
+  stop: function() {
+      
+  }
 };
 
 function swapTo(id) {
@@ -70,32 +83,64 @@ function swapTo(id) {
   $('#' + id).siblings().hide();
 }
 
-var battlefield = {
+var drawing = {
     drawMap: function() {
         
     },
     
-    drawPlayers: function(players) {
+    drawPlayers: function(players, direction) {
         var canvas = document.getElementById('map');
         if (canvas.getContext){
           var ctx = canvas.getContext('2d');
           ctx.clearRect(0, 0, 600, 300);
           
           ctx.save();
-          var offset = 8;
           for (var i = 0; i < players.length; i++) {
               var player = players[i];
               var x = player.pos.x;
               var y = player.pos.y;
               ctx.fillStyle = player.color;
               ctx.beginPath();
-              ctx.moveTo(x, y);
-              ctx.lineTo(x, y-offset);
-              ctx.lineTo(x+offset, y);
-              ctx.lineTo(x, y+offset);
-              ctx.fill();   
+              this.drawDirection(ctx, x, y, direction);
+              ctx.fill();
           }
           ctx.restore();
+        }
+    },
+    
+    drawDirection: function(ctx, x, y, direction) {
+        var offset = 8;
+        switch(direction) {
+        case 37: //left
+            ctx.moveTo(x, y);
+            ctx.lineTo(x, y-offset);
+            ctx.lineTo(x-offset, y);
+            ctx.lineTo(x, y+offset);
+            break;
+        case 38: //up
+            ctx.moveTo(x, y);
+            ctx.lineTo(x-offset, y);
+            ctx.lineTo(x, y-offset);
+            ctx.lineTo(x+offset, y);
+            break;
+        case 39: //right
+            ctx.moveTo(x, y);
+            ctx.lineTo(x, y-offset);
+            ctx.lineTo(x+offset, y);
+            ctx.lineTo(x, y+offset);
+            break;
+        case 40: //down
+            ctx.moveTo(x, y);
+            ctx.lineTo(x+offset, y);
+            ctx.lineTo(x, y+offset);
+            ctx.lineTo(x-offset, y);
+            break;
+        default:
+            // init
+            ctx.moveTo(x+offset, y);
+            ctx.lineTo(x, y+offset);
+            ctx.lineTo(x-offset, y);
+            ctx.lineTo(x, y-offset);
         }
     }
 }
