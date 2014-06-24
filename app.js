@@ -87,9 +87,9 @@ io.on('connection', function(socket) {
             console.log('dead socket disconnected');
             return;
         }
-        
-        console.log(socket.player.name + ': ' + msg);
-        io.emit('chat message', {msg:socket.player.name + ': ' + msg, from:socket.player});
+        var out = msg.indexOf(socket.player.name+ ' to ') == 0 ? msg : socket.player.name + ': ' + msg;
+        console.log(out);
+        io.emit('chat message', {msg:out, from:socket.player});
     });
 
     socket.on('finish', function(obj){

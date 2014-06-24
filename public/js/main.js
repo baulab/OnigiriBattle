@@ -14,6 +14,7 @@ $(document).ready(function() {
     swapTo('index');
     events();
     conn();
+    $('#friendsList, #fightList').attr('readonly', 'readonly');
   }
   function events() {
     $("#loginInfoSubmit").unbind().click(function() {
@@ -37,10 +38,8 @@ $(document).ready(function() {
     });
 
     $('#send_message_btn').unbind().click(function(e) {
-      var message = $('#enterMessage').val();
-      sendMessage(message);
-      $('#enterMessage').val('');
-      return false;
+        sendMsg('enterMessage');
+        return false;
     });
     
     /**
@@ -86,9 +85,7 @@ $(document).ready(function() {
     });
 
     $('#send_battle_message_btn').unbind().click(function(e) {
-      var message = $('#enterBattleChattingMessage').val();
-      sendMessage(message);
-      $('#enterBattleChattingMessage').val('');
+      sendMsg('enterBattleChattingMessage');
       return false;
     });
 
@@ -98,7 +95,25 @@ $(document).ready(function() {
           $('#send_battle_message_btn').click();
             return false;
         }
-    });    
+    });
+    
+    function sendMsg(id){
+        var message = $('#'+id).val().trim();
+        if(message.length>0){
+            if(message.indexOf('@') == 0 && message.split(' ').length>1){
+                message = directTxt(message);
+            }
+            sendMessage(message);
+            $('#'+id).val('');
+        }
+    }
+    
+    function directTxt(msg){
+        var arr = msg.split(' ');
+        var to  = arr.shift();
+        msg = player.name + ' to ' + to.substring(1, to.length) + ': ' + arr.join(' ');
+        return msg;
+    }
   }
   function conn() {
     socket.on('update play status', function(obj) {
@@ -113,8 +128,7 @@ $(document).ready(function() {
       var li = $('<li>');
       li.css('color', msg.from.color);
       li.text(msg.msg);
-      $('#messages').append(li);
-      $('#battleChattingMessage').append(li.clone());
+      $('.disp_messages').append(li);
     });
 
   	socket.on('player joined', function(obj) {
@@ -180,7 +194,7 @@ $(document).ready(function() {
           //$('#start_btn_span').prop('disabled', true);            
           $('#start_button').hide();
       }
-
+      
       //update List
       updatePlayList(obj);
   }
