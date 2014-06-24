@@ -1,5 +1,6 @@
 var game = {
   list:[],
+  directions: {37: 'left', 38: 'up', 39: 'right', 40: 'down'},
   socket: {},
   establishConn: function(socket){
       this.socket = socket;
@@ -31,8 +32,12 @@ var game = {
      */
     socket.on('start game', function(chatroom){
       info = chatroom;
-      $(window).on('keydown', game.run());
-      $(window).on('keyup', game.stop());
+      $(window).on('keydown', function(event) {
+          if (game.directions.hasOwnProperty(event.keyCode)) {
+              drawing.drawPlayers(info.playerList, game.directions[event.keyCode]);
+          }
+      });
+//      $(window).on('keyup', game.stop(event));
       
       $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
       swapTo('game_area');
@@ -67,15 +72,8 @@ var game = {
   initPlayer: function(playerList) {
       // Draw players
       drawing.drawPlayers(playerList);
-  },
-  
-  run: function() {
-      
-  },
-  
-  stop: function() {
-      
   }
+  
 };
 
 function swapTo(id) {
@@ -109,31 +107,32 @@ var drawing = {
     },
     
     drawDirection: function(ctx, x, y, direction) {
-        var offset = 8;
+        var aStep = 8;  // pixels per step
+        var offset = 8; // size unit of Onigiri 
         switch(direction) {
-        case 37: //left
-            ctx.moveTo(x, y);
-            ctx.lineTo(x, y-offset);
-            ctx.lineTo(x-offset, y);
-            ctx.lineTo(x, y+offset);
+        case 'left': //left
+            ctx.moveTo(x-aStep, y);
+            ctx.lineTo(x-aStep, y-offset);
+            ctx.lineTo(x-aStep-offset, y);
+            ctx.lineTo(x-aStep, y+offset);
             break;
-        case 38: //up
-            ctx.moveTo(x, y);
-            ctx.lineTo(x-offset, y);
-            ctx.lineTo(x, y-offset);
-            ctx.lineTo(x+offset, y);
+        case 'up': //up
+            ctx.moveTo(x, y-aStep);
+            ctx.lineTo(x-offset, y-aStep);
+            ctx.lineTo(x, y-offset-aStep);
+            ctx.lineTo(x+offset, y-aStep);
             break;
-        case 39: //right
-            ctx.moveTo(x, y);
-            ctx.lineTo(x, y-offset);
-            ctx.lineTo(x+offset, y);
-            ctx.lineTo(x, y+offset);
+        case 'right': //right
+            ctx.moveTo(x+aStep, y);
+            ctx.lineTo(x+aStep, y-offset);
+            ctx.lineTo(x+offset+aStep, y);
+            ctx.lineTo(x+aStep, y+offset);
             break;
-        case 40: //down
-            ctx.moveTo(x, y);
-            ctx.lineTo(x+offset, y);
-            ctx.lineTo(x, y+offset);
-            ctx.lineTo(x-offset, y);
+        case 'down': //down
+            ctx.moveTo(x, y+aStep);
+            ctx.lineTo(x+offset, y+aStep);
+            ctx.lineTo(x, y+offset+aStep);
+            ctx.lineTo(x-offset, y+aStep);
             break;
         default:
             // init
