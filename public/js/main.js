@@ -11,10 +11,30 @@ $(document).ready(function() {
   var player = new Object;
   init();
   function init() {
+    initColor();
     swapTo('index');
     events();
     conn();
+    $('#friendsList, #fightList').attr('readonly', 'readonly');
   }
+
+  function initColor(){
+      socket.emit('color list');
+      socket.on('update color', function(obj) {
+          console.log(obj);
+          var list = obj.clr;
+          for(var i in list){
+              $('#color option[value="'+list[i]+'"]').remove();
+          }
+          if($('#color option').length<1){
+              if(!player.name){
+                  alert('Game is full~ Please try to refresh later...');
+                  $('#loginInfoSubmit').remove();
+              }
+          }
+      });
+  }
+  
   function events() {
     $("#loginInfoSubmit").unbind().click(function() {
       $(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');
@@ -37,9 +57,8 @@ $(document).ready(function() {
     });
 
     $('#send_message_btn').unbind().click(function(e) {
-      socket.emit('chat message', $('#enterMessage').val());
-      $('#enterMessage').val('');
-      return false;
+        sendMsg('enterMessage');
+        return false;
     });
     
     /**
@@ -66,6 +85,7 @@ $(document).ready(function() {
     $('#restart').unbind().click(function() {
       swapTo('chatroom');
       socket.emit('chat message', 'Welcome back to room~');
+      $(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');      
     });
     
     $("#join").click(function() {
@@ -85,8 +105,7 @@ $(document).ready(function() {
     });
 
     $('#send_battle_message_btn').unbind().click(function(e) {
-      socket.emit('chat message', $('#enterBattleChattingMessage').val());
-      $('#enterBattleChattingMessage').val('');
+      sendMsg('enterBattleChattingMessage');
       return false;
     });
 
@@ -96,7 +115,25 @@ $(document).ready(function() {
           $('#send_battle_message_btn').click();
             return false;
         }
-    });    
+    });
+    
+    function sendMsg(id){
+        var message = $('#'+id).val().trim();
+        if(message.length>0){
+            if(message.indexOf('@') == 0 && message.split(' ').length>1){
+                message = directTxt(message);
+            }
+            sendMessage(message);
+            $('#'+id).val('');
+        }
+    }
+    
+    function directTxt(msg){
+        var arr = msg.split(' ');
+        var to  = arr.shift();
+        msg = player.name + '->' + to.substring(1, to.length) + ': ' + arr.join(' ');
+        return msg;
+    }
   }
   function conn() {
     socket.on('update play status', function(obj) {
@@ -111,8 +148,12 @@ $(document).ready(function() {
       var li = $('<li>');
       li.css('color', msg.from.color);
       li.text(msg.msg);
-      $('#messages').append(li);
-      $('#battleChattingMessage').append(li.clone());
+      $('.disp_messages').append(li);
+      var cont = $('.disp_messages').parent();
+      for( var obj in cont){
+          console.log(obj);
+          $(cont).scrollTop($(cont)[0].scrollHeight);
+      }
     });
 
   	socket.on('player joined', function(obj) {
@@ -165,20 +206,20 @@ $(document).ready(function() {
           // Update host
           $('#hostSpan').text(info.chatroom.host);
           //$('#start_btn_span').prop('disabled', false);
-          $('#start_btn_span').show();
+          $('#start_button').show();
       } else {
           $('#hostSpan').text(info.chatroom.host);
           //$('#start_btn_span').prop('disabled', true);
-          $('#start_btn_span').hide();
+          $('#start_button').hide();
       }
       
       // All players checkbox is unchecked.
       if (info.chatroom.host==null) {
           $('#hostSpan').text('');
           //$('#start_btn_span').prop('disabled', true);            
-          $('#start_btn_span').hide();
+          $('#start_button').hide();
       }
-
+      
       //update List
       updatePlayList(obj);
   }
@@ -200,6 +241,12 @@ $(document).ready(function() {
       $('#fightList').val(fightList);
       $('#friendsList').val(friendsList);
       
+  }
+
+  function sendMessage(value){
+    if(value!=null && value !="" && typeof(value) !=="undefined"){
+        socket.emit('chat message', value);
+    }
   }
 });
 //document.write('<script src="gameMove.js"></script>');

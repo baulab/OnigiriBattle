@@ -126,16 +126,19 @@ gameServer.prototype.onInitGame = function(client) {
   /**
    * broadcast all player info every syncIntervalTime until game over
    */
-  gameServer.syncInterval = setInterval(function(){
-    if (that.isPlaying) {
-      io.sockets.emit('gamePlayerInfo', that.chatroom);
-    }
-    else {
-      console.log("game over");
-      clearInterval(gameServer.syncInterval);
-      io.sockets.emit('gameOverAndWinnerInfo', that.winner);
-    }
-  }, syncIntervalTime);
+  // this.syncInterval = setInterval(function(){
+  //   if (that.isPlaying) {
+  //     that.checkGameOver();
+  //     io.sockets.emit('gamePlayerInfo', that.chatroom);
+  //   }
+  //   else {
+  //     // Developing, don't go game over
+  //     // console.log("\t game over");
+  //     // io.sockets.emit('gameOverAndWinnerInfo', that.winner);
+  //     // clearInterval(that.syncInterval);
+  //     // that.syncInterval = null;
+  //   }
+  // }, syncIntervalTime);
 };
 
 gameServer.prototype.onPlayerMoved = function(client, data) {
@@ -148,31 +151,34 @@ gameServer.prototype.onPlayerMoved = function(client, data) {
     console.log("\t socket.io:: player:" , client.uuid,
         "old position ( x , y ) = ", "(",o.old_pos.x, ",",o.old_pos.y,")");
     
+    var aStep = 8; // pixels per step
     switch(data.direct){
     case 'up':
-      if((o.pos.y-1)>=o.pos_limits.y_min){
-        o.pos.y--;
+      if((o.pos.y-aStep)>=o.pos_limits.y_min){
+        o.pos.y -= aStep;
       }
       break;
     case 'down':
-      if((o.pos.y+1)<=o.pos_limits.y_max){
-        o.pos.y++;
+      if((o.pos.y+aStep)<=o.pos_limits.y_max){
+        o.pos.y += aStep;
       }
       break;
     case 'left':
-      if((o.pos.x-1)>=o.pos_limits.x_min){
-        o.pos.x--;
+      if((o.pos.x-aStep)>=o.pos_limits.x_min){
+        o.pos.x -= aStep;;
       }
       break;
     case 'right':
-      if((o.pos.x+1)<=o.pos_limits.x_max){
-        o.pos.x++;
+      if((o.pos.x+aStep)<=o.pos_limits.x_max){
+        o.pos.x += aStep;;
       }
       break;
     }
     console.log("\t socket.io:: player: " + client.uuid +
         " new position ( x , y ) = ", "(",o.pos.x,",",o.pos.y,")");
     o.direct = data.direct;
+
+    io.emit('update players', {players: this.chatroom.playerList});
   }
 };
 
@@ -214,7 +220,6 @@ gameServer.prototype.onPlayerAttack = function(client) {
           console.log("\t socket.io:: attacked player:" , client.uuid,
               "position ( x , y ) = ", "(",attackableX, ",",attackableY,") is dead");
         player.isDead = true;
-        this.checkGameOver();
         break;
       }
     }
@@ -240,10 +245,10 @@ gameServer.prototype.checkGameOver = function() {
       gameOver = false;
       break;
     }
-    if (gameOver) {
-      this.isPlaying = false;
-      this.winner = alive;
-    }
+  }
+  if (gameOver) {
+    this.isPlaying = false;
+    this.winner = alive;
   }
 };
 

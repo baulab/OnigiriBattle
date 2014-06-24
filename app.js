@@ -87,13 +87,22 @@ io.on('connection', function(socket) {
             console.log('dead socket disconnected');
             return;
         }
-        
-        console.log(socket.player.name + ': ' + msg);
-        io.emit('chat message', {msg:socket.player.name + ': ' + msg, from:socket.player});
+        var out = msg.indexOf(socket.player.name+ '->') == 0 ? msg : socket.player.name + ': ' + msg;
+        console.log(out);
+        io.emit('chat message', {msg:out, from:socket.player});
     });
 
     socket.on('finish', function(obj){
         gameServer.playerOut(socket.player);
     	io.emit('game finish', {msg:obj,'updatePlayer': socket.player});
     });
+    
+    socket.on('color list', function(){
+        var colors = [];
+        for(var i in chatroom.playerList){
+            colors.push(chatroom.playerList[i].color);
+        }
+        console.log(socket.player);
+        io.emit('update color', {clr:colors, player:socket.player});
+    })
 });

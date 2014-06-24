@@ -3,7 +3,7 @@ var game = {
   directions: {37: 'left', 38: 'up', 39: 'right', 40: 'down'},
   socket: {},
   establishConn: function(socket){
-      this.socket = socket;
+      game.socket = socket;
       var li=this.list;
     socket.on('move', function (data) {
       console.log(data);
@@ -15,16 +15,14 @@ var game = {
       game.setClientUUID(client.uuid);
     });
     
-    $('#test_attack').click(function(){
-      socket.emit('playerAttack');
-    });
     
     //broadcast game over and winner info
     socket.on('gameOverAndWinnerInfo', function(data){
       console.log(data);
       $(".backClass").css('background-image', 'url(../images/winner_background.png)');
       swapTo('result_area');
-      $("#result_msg").text("winner: " + data.name);
+      $("#show_result").text(data.name);
+      $("#show_result").css("color", data.color);
     });
     
     /**
@@ -32,9 +30,13 @@ var game = {
      */
     socket.on('start game', function(chatroom){
       info = chatroom;
+
+      // Control player
       $(window).on('keydown', function(event) {
           if (game.directions.hasOwnProperty(event.keyCode)) {
-              drawing.drawPlayers(info.playerList, game.directions[event.keyCode]);
+            var direction = game.directions[event.keyCode];
+            game.socket.emit('playerMoved', {direct: direction});
+            // drawing.drawPlayers(info.playerList, game.directions[event.keyCode]);
           }
       });
 //      $(window).on('keyup', game.stop(event));
@@ -58,6 +60,10 @@ var game = {
     
     socket.on('removePlayer', function(data){
         delete data.room.playerList[data.play];
+    });
+
+    socket.on('update players', function(data){
+      drawing.drawPlayers(data.players);
     });
     
   },
@@ -86,11 +92,11 @@ var drawing = {
         
     },
     
-    drawPlayers: function(players, direction) {
+    drawPlayers: function(players) {
         var canvas = document.getElementById('map');
         if (canvas.getContext){
           var ctx = canvas.getContext('2d');
-          ctx.clearRect(0, 0, 600, 300);
+          ctx.clearRect(0, 0, 400, 400);
           
           ctx.save();
           for (var i = 0; i < players.length; i++) {
@@ -99,15 +105,15 @@ var drawing = {
               var y = player.pos.y;
               ctx.fillStyle = player.color;
               ctx.beginPath();
-              this.drawDirection(ctx, x, y, direction);
+              this.drawMoving(ctx, x, y, player.direct);
               ctx.fill();
           }
           ctx.restore();
         }
     },
     
-    drawDirection: function(ctx, x, y, direction) {
-        var aStep = 8;  // pixels per step
+    drawMoving: function(ctx, x, y, direction) {
+        var aStep = 0;  // pixels per step
         var offset = 8; // size unit of Onigiri 
         switch(direction) {
         case 'left': //left
