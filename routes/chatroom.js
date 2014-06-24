@@ -39,11 +39,22 @@ chatroom.prototype.updatePlayer = function(player) {
 };
 
 function updateHost(playerList) {
+    var sorting = [];
     for (var i = 0; i < playerList.length; i++) {
         if (playerList[i].isPlay) {
-            return playerList[i].name;
+            sorting.push(playerList[i]);
         }
     }
+
+    // Sort by entry time
+    sorting.sort(function(playerA, playerB) {
+        return playerA.date.getTime() - playerB.date.getTime();
+    });
+
+    if (sorting.length > 0) {
+        return sorting[0].name;
+    };
+
     return null;
 }
 
