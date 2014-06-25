@@ -28,16 +28,8 @@ var game = {
       info = chatroom;
 
       // Control player
-      $(window).on('keydown', function(event) {
-          if (game.directions.hasOwnProperty(event.keyCode)) {
-            var direction = game.directions[event.keyCode];
-            if (direction == 'attack') {
-              game.socket.emit('playerAttack');
-            } else {
-              game.socket.emit('playerMoved', {direct: direction});
-            }
-          }
-      });
+      window.removeEventListener("keypressed", doKeyDown, false);
+      window.addEventListener("keypressed", doKeyDown, false);
       
       $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
       swapTo('game_area');
@@ -53,6 +45,17 @@ var game = {
       drawing.drawPlayers(data.players);
     });
     
+    function doKeyDown(event) {
+        console.log("move ", new Date().getMilliseconds());
+        if (game.directions.hasOwnProperty(event.keyCode)) {
+          var direction = game.directions[event.keyCode];
+          if (direction == 'attack') {
+            game.socket.emit('playerAttack');
+          } else {
+            game.socket.emit('playerMoved', {direct: direction});
+          }
+        }
+    }
   },
   
   getClientUUID: function (){
@@ -137,4 +140,4 @@ var drawing = {
             ctx.lineTo(x, y-offset);
         }
     }
-}
+};
