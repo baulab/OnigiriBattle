@@ -9,6 +9,7 @@ $(document).ready(function() {
   var socket = io();
   var info = {}; // All player info and status
   var player = new Object;
+  
   init();
   function init() {
     initColor();
@@ -248,5 +249,23 @@ $(document).ready(function() {
         socket.emit('chat message', value);
     }
   }
+
+  /**
+  if dead, please call updateBattleList(name,color,'dead')
+  */
+  function updateBattleList(name,color,status){
+    var battlePlayerList = $('#battlePlayerList');
+    if(status=='join'){
+      var li = "<li id='battleList_" + name + "' style='color:" + color + "'>" + name + "</li>" ;
+      //var li = $('<li></li>').val(name);
+      battlePlayerList.append(li);
+    }else if(status=='left'){
+      battlePlayerList.find('#battleList_' + name).remove();
+    }else if(status=='dead'){
+      battlePlayerList.find('#battleList_' + name).css('text-decoration','line-through');
+    }
+  }
+
+  window.updateBattleList = updateBattleList;
 });
 //document.write('<script src="gameMove.js"></script>');

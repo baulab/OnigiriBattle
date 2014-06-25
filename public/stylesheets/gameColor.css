@@ -200,3 +200,19 @@ canvas {
 #send_battle_message_btn {
 	
 }
+
+#battleList {
+  	position: absolute;
+  	left: 50%;
+  	top: 30%;
+  	font-family: Comic Sans MS,arial,helvetica,sans-serif;
+}
+
+#battlePlayerList {
+	background-color: #FFFFFF;
+	width: 130px;
+  	height: 300px;
+  	float: up;
+  	margin-right:10px;
+  	overflow: auto;
+}
