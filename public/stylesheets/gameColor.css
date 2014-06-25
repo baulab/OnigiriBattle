@@ -1,7 +1,10 @@
 canvas { 
 	border: 3px solid red;
-	margin-top: 8%;
-	margin-left: 20%;	
+}
+
+.battlefield {
+	padding-left: 20%;
+	padding-top: 10%;
 }
 
 .battleTable {
@@ -203,7 +206,7 @@ canvas {
 
 #battleList {
   	position: absolute;
-  	left: 50%;
+  	right: 10%;
   	top: 30%;
   	font-family: Comic Sans MS,arial,helvetica,sans-serif;
 }

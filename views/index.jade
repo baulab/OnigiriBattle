@@ -69,7 +69,9 @@ html
                 img.start_img
                 
     #game_area(style="display:none;")
-      canvas#map(width="400" height="400")
+      .battlefield
+        img#origiri-images(style='display:none' src='../images/origiri_sprites.png')
+        canvas#map(width="400" height="400")
       
       #battleChatting
         ul#battleChattingMessage.disp_messages
