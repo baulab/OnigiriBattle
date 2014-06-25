@@ -61,13 +61,15 @@ html
             td
               textarea#enterMessage(placeholder="enter messages")
               button.start_btn
-                img#send_message_btn.send_message_btn
-      span#start_btn_span
-        button#start_button.start_btn
-          img.start_img         
+                img#send_message_btn.send_message_btn                
+          tr
+            td(id="start_btn_td" style="display:none")
+              span#start_btn_span
+              button#start_button.start_btn
+                img.start_img
+                
     #game_area(style="display:none;")
       canvas#map(width="400" height="400")
-      
       
       #battleChatting
         ul#battleChattingMessage.disp_messages

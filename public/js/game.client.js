@@ -51,8 +51,7 @@ var game = {
 
     socket.on('update players', function(data){
       drawing.drawPlayers(data.players);
-    });
-    
+    });    
   },
   
   getClientUUID: function (){
