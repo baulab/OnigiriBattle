@@ -259,9 +259,6 @@ $(document).ready(function() {
   if dead, please call updateBattleList(name,color,'dead')
   */
   function updateBattleList(name,color,status){
-    console.log('name:' + name);
-    console.log('color:' + color);
-    console.log('status:' + status);
     var battlePlayerList = $('#battlePlayerList');
     if(status=='join'){
       var li = "<li id='battleList_" + name + "' style='color:" + color + "'>" + name + "</li>" ;
