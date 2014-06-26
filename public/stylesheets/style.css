@@ -1,5 +1,5 @@
 html, body {
-  background-image: url('../images/origiri_Background.png');
+  background-image: url('../images/origiri_Background2.png');
   background-repeat: no-repeat;
   background-size: 100% 100%;
   padding: 0px;
@@ -82,9 +82,9 @@ li{
 }
 .start_img {
   position: absolute;
-  left: 85%;
+  left: 80%;
   top: 80%;
-  content: url("../images/start_button.png");
+  content: url("../images/click_here.png");
 }
 .join{
   content: url("../images/join_arrow.png");
