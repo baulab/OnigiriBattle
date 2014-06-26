@@ -35,6 +35,7 @@ var game = {
       // Control player
       window.removeEventListener("keypressed", doKeyDown, false);
       window.addEventListener("keypressed", doKeyDown, false);
+      // $(document).on('keydown', doKeyDown);
       
       // if someone is at index page, would not change to game_area
       if(!$('#index').is(':visible')){
