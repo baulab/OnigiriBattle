@@ -91,56 +91,69 @@ var drawing = {
               var player = players[i];
               var x = player.pos.x;
               var y = player.pos.y;
-              ctx.fillStyle = player.color;
-              ctx.beginPath();
-              this.drawMoving(ctx, x, y, player.direct);
-              ctx.fill();
+              this.drawMoving(ctx, x, y, player.direct, player.color);
           }
           ctx.restore();
         }
     },
     
-    drawMoving: function(ctx, x, y, direction) {
+    drawMoving: function(ctx, x, y, direction, color) {
         var offset = 50; // size unit of Onigiri 
         var originX = x - (offset / 2);
         var originY = y - (offset / 2);
+        
+        // Get origiri sprites
         var image = document.getElementById('origiri-images');
+        // Get current origin in sprites 
+        var point = drawing.getPointByOnigiriColor(color);
+        
         switch(direction) {
         case 'left': //left
-            // ctx.moveTo(x, y);
-            // ctx.lineTo(x, y-offset);
-            // ctx.lineTo(x-offset, y);
-            // ctx.lineTo(x, y+offset);
-            ctx.drawImage(image, 0, 100, 50, 50, originX, originY, offset, offset);
+            ctx.drawImage(image, point.x, point.y+100, 50, 50, originX, originY, offset, offset);
             break;
         case 'up': //up
-            // ctx.moveTo(x, y);
-            // ctx.lineTo(x-offset, y);
-            // ctx.lineTo(x, y-offset);
-            // ctx.lineTo(x+offset, y);
-            ctx.drawImage(image, 0, 300, 50, 50, originX, originY, offset, offset);
+            ctx.drawImage(image, point.x, point.y+300, 50, 50, originX, originY, offset, offset);
             break;
         case 'right': //right
-            // ctx.moveTo(x, y);
-            // ctx.lineTo(x, y-offset);
-            // ctx.lineTo(x+offset, y);
-            // ctx.lineTo(x, y+offset);
-            ctx.drawImage(image, 0, 200, 50, 50, originX, originY, offset, offset);
+            ctx.drawImage(image, point.x, point.y+200, 50, 50, originX, originY, offset, offset);
             break;
         case 'down': //down
-            // ctx.moveTo(x, y);
-            // ctx.lineTo(x+offset, y);
-            // ctx.lineTo(x, y+offset);
-            // ctx.lineTo(x-offset, y);
-            ctx.drawImage(image, 0, 0, 50, 50, originX, originY, offset, offset);
+            ctx.drawImage(image, point.x, point.y, 50, 50, originX, originY, offset, offset);
             break;
-        default:
-            // init
-            // ctx.moveTo(x+offset, y);
-            // ctx.lineTo(x, y+offset);
-            // ctx.lineTo(x-offset, y);
-            // ctx.lineTo(x, y-offset);
-            ctx.drawImage(image, 0, 0, 50, 50, originX, originY, offset, offset);
+        default: // init
+            ctx.drawImage(image, point.x, point.y, 50, 50, originX, originY, offset, offset);
         }
+    },
+    
+    getPointByOnigiriColor: function (color) {
+        var characterColorX = 0;
+        var characterColorY = 0;
+        if(color=='black'){
+            characterColorY = 0;
+            characterColorX = 0;           
+        }else if(color=='blue'){
+            characterColorY = 1;
+            characterColorX = 0;            
+        }else if(color=='green'){
+            characterColorY = 2;
+            characterColorX = 0;            
+        }else if(color=='orange'){
+            characterColorY = 3;
+            characterColorX = 0;
+        }else if(color=='pink'){
+            characterColorY = 4;
+            characterColorX = 0;
+        }else if(color=='purple'){
+            characterColorY = 0;
+            characterColorX = 1;
+        }else if(color=='red'){
+            characterColorY = 1;
+            characterColorX = 1;
+        }else if(color=='yellow'){
+            characterColorY = 2;
+            characterColorX = 1;
+        }           
+        
+        return {x: characterColorX * 100, y: characterColorY * 400};
     }
 }
