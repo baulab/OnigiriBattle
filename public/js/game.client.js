@@ -14,7 +14,12 @@ var game = {
     
     //broadcast game over and winner info
     socket.on('gameOverAndWinnerInfo', function(data){
+      
       console.log(data);
+      
+      // end game, unbind keypress event
+      window.removeEventListener("keypressed", doKeyDown, false);
+      
       $(".backClass").css('background-image', 'url(../images/winner_background.png)');
       swapTo('result_area');
       $("#show_result").text(data.name);
@@ -26,7 +31,7 @@ var game = {
      */
     socket.on('start game', function(chatroom){
       info = chatroom;
-
+      
       // Control player
       window.removeEventListener("keypressed", doKeyDown, false);
       window.addEventListener("keypressed", doKeyDown, false);
@@ -46,10 +51,9 @@ var game = {
     });
     
     function doKeyDown(event) {
-        console.log("move ", new Date().getMilliseconds());
         if (game.directions.hasOwnProperty(event.keyCode)) {
           var direction = game.directions[event.keyCode];
-          if (direction == 'attack') {
+          if (direction === 'attack') {
             game.socket.emit('playerAttack');
           } else {
             game.socket.emit('playerMoved', {direct: direction});

@@ -24,6 +24,10 @@ gameServer.prototype.initGameEvent = function(sio, client, chatroom) {
   
   console.log('\t socket.io:: player:' + client.uuid + ' connected.');
   
+  client.on('check game playing', function(data, fn){
+      fn(that.isPlaying);
+  });
+  
   /**
    * join game
    */
