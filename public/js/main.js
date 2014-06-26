@@ -9,6 +9,7 @@ $(document).ready(function() {
   var socket = io();
   var info = {}; // All player info and status
   var player = new Object;
+  var playerList = new Object;
   init();
   function init() {
     initColor();
@@ -147,6 +148,7 @@ $(document).ready(function() {
   function conn() {
     socket.on('update play status', function(obj) {
       // Update host
+      playerList = obj;
       updateHost(obj);
 
       // Update all player list
@@ -167,6 +169,7 @@ $(document).ready(function() {
 
   	socket.on('player joined', function(obj) {
       // Update host
+      playerList = obj;
       updateHost(obj);        
       console.log(obj);
       // Notify new player joined
@@ -182,6 +185,7 @@ $(document).ready(function() {
       console.log(obj);
       // Update host
       updateHost(obj);
+      playerList = obj;
       
       var li=$('<li>');
       li.css('color',obj.exitPlayer.color);
@@ -215,18 +219,18 @@ $(document).ready(function() {
           // Update host
           $('#hostSpan').text(info.chatroom.host);
           //$('#start_btn_span').prop('disabled', false);
-          $('#start_button').show();
+          $('#start_btn_td').show();
       } else {
           $('#hostSpan').text(info.chatroom.host);
           //$('#start_btn_span').prop('disabled', true);
-          $('#start_button').hide();
+          $('#start_btn_td').hide();
       }
       
       // All players checkbox is unchecked.
       if (info.chatroom.host==null) {
           $('#hostSpan').text('');
-          //$('#start_btn_span').prop('disabled', true);            
-          $('#start_button').hide();
+          //$('#start_btn_span').prop('disabled', true);
+          $('#start_btn_td').hide();
       }
       
       //update List
@@ -240,9 +244,11 @@ $(document).ready(function() {
       var playerList = obj.chatroom.playerList;
       var fightList = "";
       var friendsList = "";
+      clearBattleList();
       for(var i in playerList){
           if(playerList[i].isPlay){
               fightList += playerList[i].name + "\r\n";
+              updateBattleList(playerList[i].name,playerList[i].color,'join');
           }else{
               friendsList += playerList[i].name + "\r\n";
           }
@@ -257,5 +263,28 @@ $(document).ready(function() {
         socket.emit('chat message', value);
     }
   }
+
+  /**
+  if dead, please call updateBattleList(name,color,'dead')
+  */
+  function updateBattleList(name,color,status){
+    var battlePlayerList = $('#battlePlayerList');
+    if(status=='join'){
+      var li = "<li id='battleList_" + name + "' style='color:" + color + "'>" + name + "</li>" ;
+      //var li = $('<li></li>').val(name);
+      battlePlayerList.append(li);
+    }else if(status=='left'){
+      battlePlayerList.find('#battleList_' + name).remove();
+    }else if(status=='dead'){
+      battlePlayerList.find('#battleList_' + name).css('text-decoration','line-through');
+    }
+  }
+
+  function clearBattleList(){
+    $('#battlePlayerList').find('li').remove();
+  }
+
+  window.updateBattleList = updateBattleList;
+  window.playerList = playerList;
 });
 //document.write('<script src="gameMove.js"></script>');

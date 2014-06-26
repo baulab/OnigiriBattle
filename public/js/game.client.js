@@ -143,5 +143,37 @@ var drawing = {
             ctx.lineTo(x-offset, y);
             ctx.lineTo(x, y-offset);
         }
+    },
+    
+    getPointByOnigiriColor: function (color) {
+        var characterColorX = 0;
+        var characterColorY = 0;
+        if(color=='black'){
+            characterColorY = 0;
+            characterColorX = 0;           
+        }else if(color=='blue'){
+            characterColorY = 1;
+            characterColorX = 0;            
+        }else if(color=='green'){
+            characterColorY = 2;
+            characterColorX = 0;            
+        }else if(color=='orange'){
+            characterColorY = 3;
+            characterColorX = 0;
+        }else if(color=='pink'){
+            characterColorY = 4;
+            characterColorX = 0;
+        }else if(color=='purple'){
+            characterColorY = 0;
+            characterColorX = 1;
+        }else if(color=='red'){
+            characterColorY = 1;
+            characterColorX = 1;
+        }else if(color=='yellow'){
+            characterColorY = 2;
+            characterColorX = 1;
+        }           
+        
+        return {x: characterColorX * 100, y: characterColorY * 400};
     }
 };

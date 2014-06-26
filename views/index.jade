@@ -7,7 +7,6 @@ html
     script(src='/socket.io/socket.io.js')
     script(src='/js/jquery-1.11.1.min.js')
     script(src='/js/keyboard.js')
-    script(src='/js/gameMove.js')
     script(src='/js/game.client.js')
     script(src='/js/main.js')
     
@@ -61,20 +60,25 @@ html
             td
               textarea#enterMessage(placeholder="enter messages")
               button.start_btn
-                img#send_message_btn.send_message_btn
-      span#start_btn_span
-        button#start_button.start_btn
-          img.start_img         
+                img#send_message_btn.send_message_btn                
+          tr
+            td(id="start_btn_td" style="display:none")
+              span#start_btn_span
+              button#start_button.start_btn
+                img.start_img
+                
     #game_area(style="display:none;")
-      canvas#map(width="400" height="400")
-      
+      .battlefield
+        img#origiri-images(style='display:none' src='../images/origiri_sprites.png')
+        canvas#map(width="400" height="400")
       
       #battleChatting
         ul#battleChattingMessage.disp_messages
         textarea(id="enterBattleChattingMessage" placeholder="enter messages")
         button(style = "background-color: transparent; border: 0;")
           img(id="send_battle_message_btn" src="../images/send_message_btn.png")
-
+      #battleList
+        ul#battlePlayerList
     #result_area
       div
         h2 The WINNER is.....
