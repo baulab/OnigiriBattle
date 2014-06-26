@@ -80,11 +80,21 @@ li{
   background-color: transparent; 
   border: 0;	
 }
+
+.start_message_img {
+  position: absolute;
+  left: 77%;
+  top: 80%;
+  content: url("../images/message.png");
+  width: 130px;
+}
+
 .start_img {
   position: absolute;
   left: 85%;
   top: 80%;
-  content: url("../images/start_button.png");
+  content: url("../images/soccer.gif");
+  width: 130px;
 }
 .join{
   content: url("../images/join_arrow.png");
