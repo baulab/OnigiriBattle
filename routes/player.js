@@ -13,9 +13,9 @@ function player(name, color, uuid, socketInstance) {
   this.pos = {};
   this.old_pos = {};
   this.pos_limits = {
-    x_min : 5,
+    x_min : 25,
     x_max : 375,
-    y_min : 5,
+    y_min : 25,
     y_max : 375
   };
   this.socket={};
