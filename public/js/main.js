@@ -38,15 +38,24 @@ $(document).ready(function() {
   
   function events() {
     $("#loginInfoSubmit").unbind().click(function() {
-      $(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');
-      swapTo('chatroom');
-
+        
       player.name = $('#username').val();
       player.color = $('#color').val();
       socket.emit('init player', player);
       $('.room').css('color', player.color);
       $('#nameSpan').html(player.name);
       $('#colorSpan').html(player.color);
+
+      socket.emit('check game playing', null, function(isPlaying){
+          if(!isPlaying){
+              $(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');
+              swapTo('chatroom');
+          }else{
+              $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
+              swapTo('game_area');
+          }
+      });
+      
       return false;
     });
     

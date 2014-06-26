@@ -54,6 +54,8 @@ io.on('connection', function(socket) {
         // Notify client player joined
         io.emit('player joined', {'chatroom': chatroom, 'newPlayer': newplayer});
         console.log('player %s joined', newplayer.name);
+        
+        socket.emit("check game start", {"isPlaying": gameServer.isPlaying});
     });
     
     gameServer.initGameEvent(io, socket, chatroom);

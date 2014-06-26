@@ -14,7 +14,12 @@ var game = {
     
     //broadcast game over and winner info
     socket.on('gameOverAndWinnerInfo', function(data){
+      
       console.log(data);
+      
+      // end game, unbind keypress event
+      window.removeEventListener("keypressed", doKeyDown, false);
+      
       $(".backClass").css('background-image', 'url(../images/winner_background.png)');
       swapTo('result_area');
       $("#show_result").text(data.name);
@@ -26,18 +31,10 @@ var game = {
      */
     socket.on('start game', function(chatroom){
       info = chatroom;
-
+      
       // Control player
-      $(window).on('keydown', function(event) {
-          if (game.directions.hasOwnProperty(event.keyCode)) {
-            var direction = game.directions[event.keyCode];
-            if (direction == 'attack') {
-              game.socket.emit('playerAttack');
-            } else {
-              game.socket.emit('playerMoved', {direct: direction});
-            }
-          }
-      });
+      window.removeEventListener("keypressed", doKeyDown, false);
+      window.addEventListener("keypressed", doKeyDown, false);
       
       $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
       swapTo('game_area');
@@ -51,7 +48,18 @@ var game = {
 
     socket.on('update players', function(data){
       drawing.drawPlayers(data.players);
-    });    
+    });
+    
+    function doKeyDown(event) {
+        if (game.directions.hasOwnProperty(event.keyCode)) {
+          var direction = game.directions[event.keyCode];
+          if (direction === 'attack') {
+            game.socket.emit('playerAttack');
+          } else {
+            game.socket.emit('playerMoved', {direct: direction});
+          }
+        }
+    }
   },
   
   getClientUUID: function (){
@@ -91,37 +99,49 @@ var drawing = {
               var player = players[i];
               var x = player.pos.x;
               var y = player.pos.y;
-              this.drawMoving(ctx, x, y, player.direct, player.color);
+              ctx.fillStyle = player.color;
+              ctx.beginPath();
+              this.drawMoving(ctx, x, y, player.direct);
+              ctx.fill();
           }
           ctx.restore();
         }
     },
     
-    drawMoving: function(ctx, x, y, direction, color) {
-        var offset = 50; // size unit of Onigiri 
-        var originX = x - (offset / 2);
-        var originY = y - (offset / 2);
-        
-        // Get origiri sprites
-        var image = document.getElementById('origiri-images');
-        // Get current origin in sprites 
-        var point = drawing.getPointByOnigiriColor(color);
-        
+    drawMoving: function(ctx, x, y, direction) {
+        var oneStep = 0;  // pixels per step
+        var offset = 8; // size unit of Onigiri 
         switch(direction) {
         case 'left': //left
-            ctx.drawImage(image, point.x, point.y+100, 50, 50, originX, originY, offset, offset);
+            ctx.moveTo(x-oneStep, y);
+            ctx.lineTo(x-oneStep, y-offset);
+            ctx.lineTo(x-oneStep-offset, y);
+            ctx.lineTo(x-oneStep, y+offset);
             break;
         case 'up': //up
-            ctx.drawImage(image, point.x, point.y+300, 50, 50, originX, originY, offset, offset);
+            ctx.moveTo(x, y-oneStep);
+            ctx.lineTo(x-offset, y-oneStep);
+            ctx.lineTo(x, y-offset-oneStep);
+            ctx.lineTo(x+offset, y-oneStep);
             break;
         case 'right': //right
-            ctx.drawImage(image, point.x, point.y+200, 50, 50, originX, originY, offset, offset);
+            ctx.moveTo(x+oneStep, y);
+            ctx.lineTo(x+oneStep, y-offset);
+            ctx.lineTo(x+offset+oneStep, y);
+            ctx.lineTo(x+oneStep, y+offset);
             break;
         case 'down': //down
-            ctx.drawImage(image, point.x, point.y, 50, 50, originX, originY, offset, offset);
+            ctx.moveTo(x, y+oneStep);
+            ctx.lineTo(x+offset, y+oneStep);
+            ctx.lineTo(x, y+offset+oneStep);
+            ctx.lineTo(x-offset, y+oneStep);
             break;
-        default: // init
-            ctx.drawImage(image, point.x, point.y, 50, 50, originX, originY, offset, offset);
+        default:
+            // init
+            ctx.moveTo(x+offset, y);
+            ctx.lineTo(x, y+offset);
+            ctx.lineTo(x-offset, y);
+            ctx.lineTo(x, y-offset);
         }
     },
     
@@ -156,4 +176,4 @@ var drawing = {
         
         return {x: characterColorX * 100, y: characterColorY * 400};
     }
-}
+};
