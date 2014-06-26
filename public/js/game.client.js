@@ -36,10 +36,13 @@ var game = {
       window.removeEventListener("keypressed", doKeyDown, false);
       window.addEventListener("keypressed", doKeyDown, false);
       
-      $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
-      swapTo('game_area');
-      game.initPlayer(chatroom.playerList);
-      console.log("\t on start game", game.getClientUUID());
+      // if someone is at index page, would not change to game_area
+      if(!$('#index').is(':visible')){
+          $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
+          swapTo('game_area');
+          game.initPlayer(chatroom.playerList);
+          console.log("\t on start game", game.getClientUUID());
+      }
     });
     
     socket.on('removePlayer', function(data){
