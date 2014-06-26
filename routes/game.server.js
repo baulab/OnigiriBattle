@@ -12,7 +12,7 @@ function gameServer() {
 /**
  * Defined common variables
  */
-var oneStep = 8; // pixels per step
+var oneStep = 5; // pixels per step
 var io; // socket io from app.js
 /**
  * socket io enter point

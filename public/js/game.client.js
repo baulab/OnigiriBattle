@@ -101,47 +101,38 @@ var drawing = {
               var y = player.pos.y;
               ctx.fillStyle = player.color;
               ctx.beginPath();
-              this.drawMoving(ctx, x, y, player.direct);
+              this.drawMoving(ctx, x, y, player.direct, player.color);
               ctx.fill();
           }
           ctx.restore();
         }
     },
     
-    drawMoving: function(ctx, x, y, direction) {
-        var oneStep = 0;  // pixels per step
-        var offset = 8; // size unit of Onigiri 
+    drawMoving: function(ctx, x, y, direction, color) {
+        var offset = 50; // size unit of Onigiri 
+        var originX = x - (offset / 2);
+        var originY = y - (offset / 2);
+        
+        // Get origiri sprites
+        var image = document.getElementById('origiri-images');
+        // Get current origin in sprites 
+        var point = drawing.getPointByOnigiriColor(color);        
+        
         switch(direction) {
         case 'left': //left
-            ctx.moveTo(x-oneStep, y);
-            ctx.lineTo(x-oneStep, y-offset);
-            ctx.lineTo(x-oneStep-offset, y);
-            ctx.lineTo(x-oneStep, y+offset);
+            ctx.drawImage(image, point.x, point.y+100, 50, 50, originX, originY, offset, offset);
             break;
         case 'up': //up
-            ctx.moveTo(x, y-oneStep);
-            ctx.lineTo(x-offset, y-oneStep);
-            ctx.lineTo(x, y-offset-oneStep);
-            ctx.lineTo(x+offset, y-oneStep);
+            ctx.drawImage(image, point.x, point.y+300, 50, 50, originX, originY, offset, offset);
             break;
         case 'right': //right
-            ctx.moveTo(x+oneStep, y);
-            ctx.lineTo(x+oneStep, y-offset);
-            ctx.lineTo(x+offset+oneStep, y);
-            ctx.lineTo(x+oneStep, y+offset);
+            ctx.drawImage(image, point.x, point.y+200, 50, 50, originX, originY, offset, offset);
             break;
         case 'down': //down
-            ctx.moveTo(x, y+oneStep);
-            ctx.lineTo(x+offset, y+oneStep);
-            ctx.lineTo(x, y+offset+oneStep);
-            ctx.lineTo(x-offset, y+oneStep);
+            ctx.drawImage(image, point.x, point.y, 50, 50, originX, originY, offset, offset);
             break;
-        default:
-            // init
-            ctx.moveTo(x+offset, y);
-            ctx.lineTo(x, y+offset);
-            ctx.lineTo(x-offset, y);
-            ctx.lineTo(x, y-offset);
+        default: // init
+            ctx.drawImage(image, point.x, point.y, 50, 50, originX, originY, offset, offset);
         }
     },
     
