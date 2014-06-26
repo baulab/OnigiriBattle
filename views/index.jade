@@ -7,14 +7,13 @@ html
     script(src='/socket.io/socket.io.js')
     script(src='/js/jquery-1.11.1.min.js')
     script(src='/js/keyboard.js')
-    script(src='/js/gameMove.js')
     script(src='/js/game.client.js')
     script(src='/js/main.js')
     
   body.backClass
     #index.index
       p LOGIN
-      form(id="loginInfo" name="input" class="login")
+      form(id="loginInfo" name="input" class="login" action="javascript:$('#loginInfoSubmit').click()")
         label Username:
         input(type="text", id="username" name="user")
         br
@@ -71,7 +70,8 @@ html
     #game_area(style="display:none;")
       .battlefield
         img#origiri-images(style='display:none' src='../images/origiri_sprites.png')
-        canvas#map(width="400" height="400")
+        .canvas_field
+          canvas#map(width="400" height="400")
       
       #battleChatting
         ul#battleChattingMessage.disp_messages

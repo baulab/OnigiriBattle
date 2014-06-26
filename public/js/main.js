@@ -38,15 +38,25 @@ $(document).ready(function() {
   
   function events() {
     $("#loginInfoSubmit").unbind().click(function() {
-      $(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');
-      swapTo('chatroom');
-
+        
       player.name = $('#username').val();
       player.color = $('#color').val();
       socket.emit('init player', player);
       $('.room').css('color', player.color);
       $('#nameSpan').html(player.name);
       $('#colorSpan').html(player.color);
+
+      socket.emit('check game playing', null, function(data){
+          if(!data.isPlaying){
+              $(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');
+              swapTo('chatroom');
+          }else{
+              $(".backClass").css('background-image', 'url(../images/Battle_Background.png)');
+              swapTo('game_area');
+              drawing.drawPlayers(data.players);
+          }
+      });
+      
       return false;
     });
     
@@ -100,7 +110,7 @@ $(document).ready(function() {
     $('#enterMessage').keypress(function(event){
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if(keycode == '13'){
-        	$('#send_message_btn').click();
+            $('#send_message_btn').click();
             return false;
         }
     });
@@ -158,7 +168,7 @@ $(document).ready(function() {
       }
     });
 
-  	socket.on('player joined', function(obj) {
+    socket.on('player joined', function(obj) {
       // Update host
       playerList = obj;
       updateHost(obj);        
@@ -186,16 +196,16 @@ $(document).ready(function() {
     });
 
     socket.on('game finish', function(obj){
-    	console.log(obj);
-    	if(obj.updatePlayer.uuid==player.uuid){
+        console.log(obj);
+        if(obj.updatePlayer.uuid==player.uuid){
             $('window').unbind('keydown');
-          	if(obj.msg.win){
-          		$('#result_msg').text('You Won!!!');
-          	}else{
-          		$('#result_msg').text('You Lost~~');
-          	}
-          	$('#result_time').text(new Date());	
-    	}
+            if(obj.msg.win){
+                $('#result_msg').text('You Won!!!');
+            }else{
+                $('#result_msg').text('You Lost~~');
+            }
+            $('#result_time').text(new Date()); 
+        }
     });
     
     game.establishConn(socket);
@@ -278,4 +288,3 @@ $(document).ready(function() {
   window.updateBattleList = updateBattleList;
   window.playerList = playerList;
 });
-//document.write('<script src="gameMove.js"></script>');

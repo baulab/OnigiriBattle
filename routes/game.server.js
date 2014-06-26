@@ -12,7 +12,7 @@ function gameServer() {
 /**
  * Defined common variables
  */
-var oneStep = 8; // pixels per step
+var oneStep = 5; // pixels per step
 var io; // socket io from app.js
 /**
  * socket io enter point
@@ -23,6 +23,10 @@ gameServer.prototype.initGameEvent = function(sio, client, chatroom) {
   that.setChatroom(chatroom);
   
   console.log('\t socket.io:: player:' + client.uuid + ' connected.');
+  
+  client.on('check game playing', function(data, fn){
+      fn({isPlaying: that.isPlaying, players: that.chatroom.playerList});
+  });
   
   /**
    * join game
@@ -43,6 +47,10 @@ gameServer.prototype.initGameEvent = function(sio, client, chatroom) {
    */
   client.on('playerAttack', function() {
     that.onPlayerAttack(client);
+  });
+  
+  client.on('disconnect', function(){
+    that.onDisconnect(client);
   });
   
   /**
@@ -161,6 +169,15 @@ gameServer.prototype.onPlayerAttack = function(client) {
   }
 };
 
+gameServer.prototype.onDisconnect = function(client) {
+    if(this.isPlaying){
+        delete this.games[client.uuid];
+        if(Object.keys(this.games).length === 0){
+            this.isPlaying = false;
+            console.log("all players leave game, game end.");
+        }
+    }
+};
 
 gameServer.prototype.checkGameOver = function() {
   var alive = null;
