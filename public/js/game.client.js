@@ -31,7 +31,8 @@ var game = {
      */
     socket.on('start game', function(chatroom){
       info = chatroom;
-      
+      //$('#battleChattingMessage').scrollTop($('#battleChattingMessage').scrollHeight);
+
       // Control player
       window.removeEventListener("keypressed", doKeyDown, false);
       window.addEventListener("keypressed", doKeyDown, false);
@@ -43,6 +44,9 @@ var game = {
           game.initPlayer(chatroom.playerList);
           console.log("\t on start game", game.getClientUUID());
       }
+      
+      $('#battleChattingMessage').scrollTop(999999);
+      
     });
     
     socket.on('removePlayer', function(data){
