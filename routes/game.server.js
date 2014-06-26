@@ -127,45 +127,81 @@ gameServer.prototype.onPlayerMoved = function(client, data) {
 
 gameServer.prototype.onPlayerAttack = function(client) {
   if(this.isPlaying){
-    console.log("\t socket.io:: player:", client.uuid, "action: attack");
+    // console.log("\t socket.io:: player:", client.uuid, "action: attack");
 
-    var o = this.games[client.uuid];
-    console.log("\t socket.io:: player:" , client.uuid,
-        "position ( x , y ) = ", "(",o.pos.x, ",",o.pos.y,")");
-    
+    // var o = this.games[client.uuid];
+    // console.log("\t socket.io:: player:" , client.uuid,
+    //     "position ( x , y ) = ", "(",o.pos.x, ",",o.pos.y,")");
+
     var x = o.pos.x;
     var y = o.pos.y;
-    var attackableX, attackableY;
 
-    switch (o.direct) {
-    case 'up':
-      attackableX = x;
-      attackableY = y - oneStep;
-      break;
-    case 'down':
-      attackableX = x;
-      attackableY = y + oneStep;
-      break;
-    case 'left':
-      attackableX = x - oneStep;
-      attackableY = y;
-      break;
-    case 'right':
-      attackableX = x + oneStep;
-      attackableY = y;
-      break;
-    }
+    // 半徑, 最遠可攻擊距離
+    var radius = Math.round(Math.sqrt(Math.pow(50, 2) * 2)) - 35; // 扣35, 原半徑攻擊範圍過廣
 
     for (var uuid in this.games) {
+      if (uuid == o.uuid) {
+        continue;
+      }
       var player = this.games[uuid];
-      if (player.pos.x == attackableX && player.pos.y == attackableY) {
-          console.log("\t socket.io:: attacked player:" , client.uuid,
-              "position ( x , y ) = ", "(",attackableX, ",",attackableY,") is dead");
-        player.isDead = true;
+
+      // 以當前玩家中心坐標為圓心 (0, 0), y-axis 反轉，上正，下負 (Canvas y-axis，上負，下正)
+      var adjustX = player.pos.x - x;
+      var adjustY = y - player.pos.y; // y-axis 反轉
+
+      // 敵人與當前玩家中心點距離
+      var distance = Math.round(Math.sqrt(Math.pow(adjustX, 2) + Math.pow(adjustY, 2)));      
+
+      // var upRadians;   // 上圓逆時鐘旋轉，所得弧度
+      // var downRadians; // 下圓順時鐘旋轉，所得弧度
+      var up_right_radians, 
+          up_left_radians,
+          down_right_radians,
+          down_left_radians;
+
+      // 敵人所在坐標的弧度
+      var enemyRadians = Math.atan2(adjustY, adjustX);
+      // 是否在扇形可視角內
+      var isSeeing = false;
+
+      // 扇形攻擊範圍，角度設為90度
+      switch (o.direct) {
+      case 'up':
+        up_right_radians = Math.atan2(25, 25);
+        up_left_radians = Math.atan2(25, -25);
+        if (enemyRadians > up_right_radians && enemyRadians < up_left_radians) {
+          isSeeing = true;
+        }
+        break;
+      case 'down':
+        down_right_radians = Math.atan2(-25, 25);
+        down_left_radians = Math.atan2(-25, -25);
+        if (enemyRadians < down_right_radians && enemyRadians > down_left_radians) {
+          isSeeing = true;
+        }        
+        break;
+      case 'left':
+        up_left_radians = Math.atan2(25, -25);
+        down_left_radians = Math.atan2(-25, -25);
+        if (enemyRadians > up_left_radians || enemyRadians < down_left_radians) {
+          isSeeing = true;
+        }          
+        break;
+      case 'right':
+        up_right_radians = Math.atan2(25, 25);
+        down_right_radians = Math.atan2(-25, 25);
+        if (enemyRadians < up_right_radians && enemyRadians > down_right_radians) {
+          isSeeing = true;
+        }          
         break;
       }
-    }
 
+      if (isSeeing && distance <= radius) {
+        // console.log("\t socket.io:: attacked player:" , player.uuid,
+        //   "position ( x , y ) = ", "(",player.pos.x, ",",player.pos.y,") is dead");
+        player.isDead = true;
+      };
+    }
   }
 };
 
