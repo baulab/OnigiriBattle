@@ -31,7 +31,8 @@ var game = {
      */
     socket.on('start game', function(chatroom){
       info = chatroom;
-      
+      //$('#battleChattingMessage').scrollTop($('#battleChattingMessage').scrollHeight);
+
       // Control player
       window.removeEventListener("keypressed", doKeyDown, false);
       window.addEventListener("keypressed", doKeyDown, false);
@@ -44,6 +45,9 @@ var game = {
           game.initPlayer(chatroom.playerList);
           console.log("\t on start game", game.getClientUUID());
       }
+      
+      $('#battleChattingMessage').scrollTop(999999);
+      
     });
     
     socket.on('removePlayer', function(data){
@@ -119,21 +123,63 @@ var drawing = {
         
         // Get origiri sprites
         var image = document.getElementById('origiri-images');
-        // Get current origin in sprites 
-        var point = drawing.getPointByOnigiriColor(color);        
+        
+        var characterColorX = 0;
+        var characterColorY = 0;
+        if(color=='black'){
+            characterColorY = 0;
+            characterColorX = 0;           
+        }else if(color=='blue'){
+            characterColorY = 1;
+            characterColorX = 0;            
+        }else if(color=='green'){
+            characterColorY = 2;
+            characterColorX = 0;            
+        }else if(color=='orange'){
+            characterColorY = 3;
+            characterColorX = 0;
+        }else if(color=='pink'){
+            characterColorY = 4;
+            characterColorX = 0;
+        }else if(color=='purple'){
+            characterColorY = 0;
+            characterColorX = 1;
+        }else if(color=='red'){
+            characterColorY = 1;
+            characterColorX = 1;
+        }else if(color=='yellow'){
+            characterColorY = 2;
+            characterColorX = 1;
+        }
         
         switch(direction) {
         case 'left': //left
-            ctx.drawImage(image, point.x, point.y+100, 50, 50, originX, originY, offset, offset);
+            // ctx.moveTo(x, y);
+            // ctx.lineTo(x, y-offset);
+            // ctx.lineTo(x-offset, y);
+            // ctx.lineTo(x, y+offset);
+            ctx.drawImage(image, characterColorX*100, characterColorY*400+100, 50, 50, originX, originY, offset, offset);
             break;
         case 'up': //up
-            ctx.drawImage(image, point.x, point.y+300, 50, 50, originX, originY, offset, offset);
+            // ctx.moveTo(x, y);
+            // ctx.lineTo(x-offset, y);
+            // ctx.lineTo(x, y-offset);
+            // ctx.lineTo(x+offset, y);
+            ctx.drawImage(image, characterColorX*100, characterColorY*400+300, 50, 50, originX, originY, offset, offset);
             break;
         case 'right': //right
-            ctx.drawImage(image, point.x, point.y+200, 50, 50, originX, originY, offset, offset);
+            // ctx.moveTo(x, y);
+            // ctx.lineTo(x, y-offset);
+            // ctx.lineTo(x+offset, y);
+            // ctx.lineTo(x, y+offset);
+            ctx.drawImage(image, characterColorX*100, characterColorY*400+200, 50, 50, originX, originY, offset, offset);
             break;
         case 'down': //down
-            ctx.drawImage(image, point.x, point.y, 50, 50, originX, originY, offset, offset);
+            // ctx.moveTo(x, y);
+            // ctx.lineTo(x+offset, y);
+            // ctx.lineTo(x, y+offset);
+            // ctx.lineTo(x-offset, y);
+            ctx.drawImage(image, characterColorX*100, characterColorY*400, 50, 50, originX, originY, offset, offset);
             break;
         default: // init
             ctx.drawImage(image, point.x, point.y, 50, 50, originX, originY, offset, offset);

@@ -166,6 +166,8 @@ $(document).ready(function() {
           console.log(obj);
           $(cont).scrollTop($(cont)[0].scrollHeight);
       }
+
+      $('#battleChattingMessage').scrollTop(999999);
     });
 
     socket.on('player joined', function(obj) {
