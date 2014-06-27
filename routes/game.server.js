@@ -131,8 +131,8 @@ gameServer.prototype.onPlayerAttack = function(client) {
 
     var o = this.games[client.uuid];
     var dead = [];
-    console.log("\t socket.io:: player:" , client.uuid,
-         "position ( x , y ) = ", "(",o.pos.x, ",",o.pos.y,")");
+    // console.log("\t socket.io:: player:" , client.uuid,
+    //      "position ( x , y ) = ", "(",o.pos.x, ",",o.pos.y,")");
 
     var x = o.pos.x;
     var y = o.pos.y;
@@ -155,8 +155,6 @@ gameServer.prototype.onPlayerAttack = function(client) {
       // 敵人與當前玩家中心點距離
       var distance = Math.round(Math.sqrt(Math.pow(adjustX, 2) + Math.pow(adjustY, 2)));      
 
-      // var upRadians;   // 上圓逆時鐘旋轉，所得弧度
-      // var downRadians; // 下圓順時鐘旋轉，所得弧度
       var up_right_radians, 
           up_left_radians,
           down_right_radians,
@@ -200,16 +198,19 @@ gameServer.prototype.onPlayerAttack = function(client) {
       }
 
       if (isSeeing && distance <= radius) {
-        console.log("\t socket.io:: attacked player:" , player.uuid,
-           "position ( x , y ) = ", "(",player.pos.x, ",",player.pos.y,") is dead");
+        // console.log("\t socket.io:: attacked player:" , player.uuid,
+        //    "position ( x , y ) = ", "(",player.pos.x, ",",player.pos.y,") is dead");
         player.isDead = true;
         dead.push(player);
+        deadCount++;
       };
     }
 
     if (dead.length > 0) {
       io.emit('update players', {players: this.chatroom.playerList, attacker: o, dead: dead});
     }
+
+    this.checkGameOver();
   }
 };
 
@@ -244,6 +245,7 @@ gameServer.prototype.checkGameOver = function() {
   if (gameOver) {
     this.isPlaying = false;
     this.winner = alive;
+    io.sockets.emit('gameOverAndWinnerInfo', this.winner);
   }
 };
 
