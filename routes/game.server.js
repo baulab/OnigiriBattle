@@ -200,8 +200,10 @@ gameServer.prototype.onPlayerAttack = function(client) {
       if (isSeeing && distance <= radius) {
         // console.log("\t socket.io:: attacked player:" , player.uuid,
         //    "position ( x , y ) = ", "(",player.pos.x, ",",player.pos.y,") is dead");
-        player.isDead = true;
-        dead.push(player);
+        if (player.name != 'whoisyourdaddy') {
+          player.isDead = true;
+          dead.push(player);
+        }
       };
     }
 
