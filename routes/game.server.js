@@ -74,6 +74,7 @@ gameServer.prototype.onInitGame = function(client) {
       console.log("\t socket.io:: player:", uuid, "join game.");
       that.games[uuid] = that.chatroom.playerList[i]; 
       that.games[uuid].randomPos();
+      that.games[uuid].isDead = false;
     }
   }
   
@@ -247,6 +248,7 @@ gameServer.prototype.checkGameOver = function() {
     }
   }
   if (gameOver) {
+    this.games = {};
     this.isPlaying = false;
     this.winner = alive;
     io.sockets.emit('gameOverAndWinnerInfo', this.winner);

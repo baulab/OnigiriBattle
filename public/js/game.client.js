@@ -20,12 +20,17 @@ var game = {
       
       console.log("gameOverAndWinnerInfo", data);
       
-      alert("Game Over!");
-      
-      $(".backClass").css('background-image', 'url(../images/winner_background.png)');
-      swapTo('result_area');
-      $("#show_result").text(data.name);
-      $("#show_result").css("color", data.color);
+      var count = 5;
+      var int = setInterval(function() {
+        count--;
+        if (count == 0) {
+          clearInterval(int);
+          $(".backClass").css('background-image', 'url(../images/winner_background.png)');
+          swapTo('result_area');
+          $("#show_result").text(data.name);
+          $("#show_result").css("color", data.color);          
+        };
+      }, 1000);
     });
     
     /**
@@ -71,6 +76,12 @@ var game = {
           var message = 'I killed ' + aDead.name;
           if (data.attacker.uuid == game.getClientUUID()) {
             game.socket.emit('chat message', message);
+          }
+
+          if (aDead.uuid == game.getClientUUID()) {
+            // Player dead can't control anymore.
+            window.removeEventListener("keypressed", doKeyDown, false);
+            $(document).off("keydown");
           }
         }        
       }
