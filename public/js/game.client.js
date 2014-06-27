@@ -19,6 +19,7 @@ var game = {
       $(document).off("keydown");
       
       console.log("gameOverAndWinnerInfo", data);
+      socket.emit('update play status', false);
       
       var count = 5;
       var int = setInterval(function() {
@@ -144,7 +145,7 @@ var drawing = {
 
               if (player.isDead) {
                 // draw dead
-                this.drawDead(ctx, x, y, color);
+                this.drawDead(ctx, x, y, player.color);
               } else {
                 this.drawMoving(ctx, x, y, player.direct, player.color);
               }
@@ -221,8 +222,40 @@ var drawing = {
         // Get origiri sprites
         var image = document.getElementById('grave-images');
         // Get current origin in sprites 
-        var point = drawing.getPointByOnigiriColor(color);        
+        var point = drawing.getPintByGraveColor(color);        
         
-        ctx.drawImage(image, 0, point.y, offset, offset, originX, originY, offset, offset);
-    }
+        ctx.drawImage(image, point.x, point.y, offset, offset, originX, originY, offset, offset);
+    },
+
+    getPintByGraveColor: function (color) {
+        var characterColorX = 0;
+        var characterColorY = 0;
+        if(color=='black'){
+            characterColorY = 0;
+            characterColorX = 0;           
+        }else if(color=='blue'){
+            characterColorY = 1;
+            characterColorX = 0;            
+        }else if(color=='green'){
+            characterColorY = 2;
+            characterColorX = 0;            
+        }else if(color=='orange'){
+            characterColorY = 3;
+            characterColorX = 0;
+        }else if(color=='pink'){
+            characterColorY = 4;
+            characterColorX = 0;
+        }else if(color=='purple'){
+            characterColorY = 5;
+            characterColorX = 0;
+        }else if(color=='red'){
+            characterColorY = 6;
+            characterColorX = 0;
+        }else if(color=='yellow'){
+            characterColorY = 7;
+            characterColorX = 0;
+        }           
+        
+        return {x: 0, y: characterColorY * 100};
+    },
 };

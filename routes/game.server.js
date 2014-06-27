@@ -255,14 +255,6 @@ gameServer.prototype.checkGameOver = function() {
   }
 };
 
-gameServer.prototype.resetPlayers = function() {
-  for (var i = 0; i < this.chatroom.playerList.length; i++) {
-    var player = this.chatroom.playerList[i];
-    player.isDead = false;
-    player.setPlay(false);
-  }
-}
-
 gameServer.prototype.setChatroom = function(chatroom){
   this.chatroom = chatroom;
 }
