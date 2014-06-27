@@ -2,7 +2,6 @@ var UUID = require('node-uuid');
 module.exports = exports = new gameServer();
 function gameServer() {
   this.games = {};
-  this.players = {};
   this.isPlaying = false;
   this.syncInterval = '';
   this.chatroom = {};
@@ -67,6 +66,7 @@ gameServer.prototype.onInitGame = function(client) {
   console.log("\t socket.io:: host "+client.uuid+" start game.");
   
   var that = this;
+  var count = 0;
   
   // Join all ready users in gameServer.games
   for(var i=0; i<that.chatroom.playerList.length; i++){ 
@@ -75,13 +75,19 @@ gameServer.prototype.onInitGame = function(client) {
       console.log("\t socket.io:: player:", uuid, "join game.");
       that.games[uuid] = that.chatroom.playerList[i]; 
       that.games[uuid].randomPos();
+      that.games[uuid].isDead = false;
+      count++;
     }
   }
   
   // broadcast join game players
-  io.sockets.emit('start game', that.chatroom);
-
-  this.isPlaying = true;
+  if (count < 2) {
+    this.games = {};
+    io.sockets.emit('need more players');
+  } else {
+    io.sockets.emit('start game', that.chatroom);
+    this.isPlaying = true;
+  }
 };
 
 gameServer.prototype.onPlayerMoved = function(client, data) {
@@ -131,8 +137,8 @@ gameServer.prototype.onPlayerAttack = function(client) {
 
     var o = this.games[client.uuid];
     var dead = [];
-    console.log("\t socket.io:: player:" , client.uuid,
-         "position ( x , y ) = ", "(",o.pos.x, ",",o.pos.y,")");
+    // console.log("\t socket.io:: player:" , client.uuid,
+    //      "position ( x , y ) = ", "(",o.pos.x, ",",o.pos.y,")");
 
     var x = o.pos.x;
     var y = o.pos.y;
@@ -155,8 +161,6 @@ gameServer.prototype.onPlayerAttack = function(client) {
       // 敵人與當前玩家中心點距離
       var distance = Math.round(Math.sqrt(Math.pow(adjustX, 2) + Math.pow(adjustY, 2)));      
 
-      // var upRadians;   // 上圓逆時鐘旋轉，所得弧度
-      // var downRadians; // 下圓順時鐘旋轉，所得弧度
       var up_right_radians, 
           up_left_radians,
           down_right_radians,
@@ -200,16 +204,20 @@ gameServer.prototype.onPlayerAttack = function(client) {
       }
 
       if (isSeeing && distance <= radius) {
-        console.log("\t socket.io:: attacked player:" , player.uuid,
-           "position ( x , y ) = ", "(",player.pos.x, ",",player.pos.y,") is dead");
-        player.isDead = true;
-        dead.push(player);
+        // console.log("\t socket.io:: attacked player:" , player.uuid,
+        //    "position ( x , y ) = ", "(",player.pos.x, ",",player.pos.y,") is dead");
+        if (player.name != 'whoisyourdaddy') {
+          player.isDead = true;
+          dead.push(player);
+        }
       };
     }
 
     if (dead.length > 0) {
       io.emit('update players', {players: this.chatroom.playerList, attacker: o, dead: dead});
     }
+
+    this.checkGameOver();
   }
 };
 
@@ -248,8 +256,10 @@ gameServer.prototype.checkGameOver = function() {
     }
   }
   if (gameOver) {
+    this.games = {};
     this.isPlaying = false;
     this.winner = alive;
+    io.sockets.emit('gameOverAndWinnerInfo', this.winner);
   }
 };
 

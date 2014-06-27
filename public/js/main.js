@@ -86,16 +86,6 @@ $(document).ready(function() {
     $('#start').unbind().click(function() {
       $(this).prop('disabled', true);
     });
-    
-    $('#to_win').unbind('click').click(function() {
-      swapTo('result_area');
-      socket.emit('finish',{win:true});
-    }).hide();
-    
-    $('#to_lose').unbind('click').click(function() {
-        swapTo('result_area');
-        socket.emit('finish',{win:false});
-    }).hide();
 
     $('#restart').unbind().click(function() {
       swapTo('chatroom');

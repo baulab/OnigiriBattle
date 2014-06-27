@@ -16,23 +16,29 @@ var game = {
     socket.on('gameOverAndWinnerInfo', function(data){
       // end game, unbind keypress event
       window.removeEventListener("keypressed", doKeyDown, false);
+      $(document).off("keydown");
       
       console.log("gameOverAndWinnerInfo", data);
+      socket.emit('update play status', false);
       
-      alert("Game Over!");
-      
-      $(".backClass").css('background-image', 'url(../images/winner_background.png)');
-      swapTo('result_area');
-      $("#show_result").text(data.name);
-      $("#show_result").css("color", data.color);
+      var count = 5;
+      var int = setInterval(function() {
+        count--;
+        if (count == 0) {
+          clearInterval(int);
+          $(".backClass").css('background-image', 'url(../images/winner_background.png)');
+          swapTo('result_area');
+          $("#show_result").text(data.name);
+          $("#show_result").css("color", data.color);          
+        };
+      }, 1000);
     });
     
     /**
      * start game response
      */
     socket.on('start game', function(chatroom){
-      info = chatroom;
-      //$('#battleChattingMessage').scrollTop($('#battleChattingMessage').scrollHeight);
+      if (chatroom.playerList) {};
 
       // Control player
       window.removeEventListener("keypressed", doKeyDown, false);
@@ -71,9 +77,19 @@ var game = {
           if (data.attacker.uuid == game.getClientUUID()) {
             game.socket.emit('chat message', message);
           }
+
+          if (aDead.uuid == game.getClientUUID()) {
+            // Player dead can't control anymore.
+            window.removeEventListener("keypressed", doKeyDown, false);
+            $(document).off("keydown");
+          }
         }        
       }
     });
+
+    socket.on('need more players', function() {
+      alert('need more players');
+    })
     
     /**
      * when no body is in game (not finish), let observer change to chatroom
@@ -132,7 +148,7 @@ var drawing = {
 
               if (player.isDead) {
                 // draw dead
-
+                this.drawDead(ctx, x, y, player.color);
               } else {
                 this.drawMoving(ctx, x, y, player.direct, player.color);
               }
@@ -199,5 +215,50 @@ var drawing = {
         }           
         
         return {x: characterColorX * 100, y: characterColorY * 400};
-    }
+    },
+
+    drawDead: function (ctx, x, y, color){
+        var offset = 50; // size unit of Onigiri 
+        var originX = x - (offset / 2);
+        var originY = y - (offset / 2);
+        
+        // Get origiri sprites
+        var image = document.getElementById('grave-images');
+        // Get current origin in sprites 
+        var point = drawing.getPintByGraveColor(color);        
+        
+        ctx.drawImage(image, point.x, point.y, offset, offset, originX, originY, offset, offset);
+    },
+
+    getPintByGraveColor: function (color) {
+        var characterColorX = 0;
+        var characterColorY = 0;
+        if(color=='black'){
+            characterColorY = 0;
+            characterColorX = 0;           
+        }else if(color=='blue'){
+            characterColorY = 1;
+            characterColorX = 0;            
+        }else if(color=='green'){
+            characterColorY = 2;
+            characterColorX = 0;            
+        }else if(color=='orange'){
+            characterColorY = 3;
+            characterColorX = 0;
+        }else if(color=='pink'){
+            characterColorY = 4;
+            characterColorX = 0;
+        }else if(color=='purple'){
+            characterColorY = 5;
+            characterColorX = 0;
+        }else if(color=='red'){
+            characterColorY = 6;
+            characterColorX = 0;
+        }else if(color=='yellow'){
+            characterColorY = 7;
+            characterColorX = 0;
+        }           
+        
+        return {x: 0, y: characterColorY * 100};
+    },
 };

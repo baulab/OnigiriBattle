@@ -1,20 +1,29 @@
+# OnigiriBattle 御飯糰大逃殺
 
-
-# origiriBattle
-
-
-
-## Usage
-
-
-
-## Developing
-
-
+## Environment
 
 ### Tools
 
-Created with [Nodeclipse](https://github.com/Nodeclipse/nodeclipse-1)
- ([Eclipse Marketplace](http://marketplace.eclipse.org/content/nodeclipse), [site](http://www.nodeclipse.org))   
+1. [Node.js](http://nodejs.org)
+2. [Nodeclipse](http://www.nodeclipse.org/updates/)
 
-Nodeclipse is free open-source project that grows with your contributions.
+### Node.js modules
+
+1. [Express](http://expressjs.com) - Web application framework for node
+2. [Socket.IO](http://socket.io) - Real-time Engine
+3. [Jade](http://jade-lang.com) - Node Template Engine
+
+### Javascript frameworks
+
+1. [jQuery 1.11.1](http://jquery.com)
+
+### Usage
+
+1. Clone the project into your Nodeclipse workspace, then import it.
+2. Make sure that you had installed [Node.js](http://nodejs.org).
+2. Execute `npm install` in project folder to install node modules.
+3. Execute `npm start` to start the server at `localhost:3000`
+
+## Developing
+
+To be continued...
