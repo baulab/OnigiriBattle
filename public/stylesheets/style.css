@@ -141,3 +141,7 @@ textarea {
 .invalid {
     border: solid 2px #FF0000;  
 }
+
+#battleChatting .disp_messages li, #battlePlayerList li{
+	padding:2px 0px;
+}
