@@ -14,11 +14,12 @@ var game = {
     
     //broadcast game over and winner info
     socket.on('gameOverAndWinnerInfo', function(data){
+      // end game, unbind keypress event
+      window.removeEventListener("keypressed", doKeyDown, false);
       
       console.log("gameOverAndWinnerInfo", data);
       
-      // end game, unbind keypress event
-      window.removeEventListener("keypressed", doKeyDown, false);
+      alert("Game Over!");
       
       $(".backClass").css('background-image', 'url(../images/winner_background.png)');
       swapTo('result_area');
