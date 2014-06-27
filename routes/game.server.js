@@ -218,7 +218,13 @@ gameServer.prototype.onDisconnect = function(client) {
         delete this.games[client.uuid];
         if(Object.keys(this.games).length === 0){
             this.isPlaying = false;
-            console.log("all players leave game, game end.");
+            console.log("\t socket.io:: all players leave game, game end.");
+            
+            // if no one play
+            if(this.chatroom.playerList.length>0){
+                console.log("\t socket.io:: observers change to chatroom.");
+                io.emit('remove observer');
+            }
         }
     }
 };

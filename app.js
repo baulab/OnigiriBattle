@@ -40,7 +40,7 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 var io = socket.listen(server);
 
 io.on('connection', function(socket) {
-    console.log('new player connected');
+
     socket.uuid = UUID();
     
     socket.emit('onconnected', {uuid: socket.uuid});
@@ -90,7 +90,7 @@ io.on('connection', function(socket) {
             return;
         }
         var out = msg.indexOf(socket.player.name+ '->') == 0 ? msg : socket.player.name + ': ' + msg;
-        console.log(out);
+        console.log("\t socket.io:: chat message: ", out);
         io.emit('chat message', {msg:out, from:socket.player});
     });
 
@@ -104,7 +104,6 @@ io.on('connection', function(socket) {
         for(var i in chatroom.playerList){
             colors.push(chatroom.playerList[i].color);
         }
-        console.log(socket.player);
         io.emit('update color', {clr:colors, player:socket.player});
     })
 });
