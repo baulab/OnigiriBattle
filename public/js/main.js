@@ -38,10 +38,14 @@ $(document).ready(function() {
   
   function events() {
     $("#loginInfoSubmit").unbind().click(function() {
-        
+      if($('#username').val().trim().length<1){
+        $('#username').addClass('invalid')
+        return false;
+      }
       player.name = $('#username').val();
       player.color = $('#color').val();
       socket.emit('init player', player);
+      $('#username').removeClass('invalid')
       $('.room').css('color', player.color);
       $('#nameSpan').html(player.name);
       $('#colorSpan').html(player.color);
