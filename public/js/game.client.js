@@ -133,7 +133,7 @@ var drawing = {
 
               if (player.isDead) {
                 // draw dead
-
+                this.drawDead(ctx, x, y, color);
               } else {
                 this.drawMoving(ctx, x, y, player.direct, player.color);
               }
@@ -200,5 +200,18 @@ var drawing = {
         }           
         
         return {x: characterColorX * 100, y: characterColorY * 400};
+    },
+
+    drawDead: function (ctx, x, y, color){
+        var offset = 50; // size unit of Onigiri 
+        var originX = x - (offset / 2);
+        var originY = y - (offset / 2);
+        
+        // Get origiri sprites
+        var image = document.getElementById('grave-images');
+        // Get current origin in sprites 
+        var point = drawing.getPointByOnigiriColor(color);        
+        
+        ctx.drawImage(image, 0, point.y, offset, offset, originX, originY, offset, offset);
     }
 };
