@@ -15,7 +15,7 @@ var game = {
     //broadcast game over and winner info
     socket.on('gameOverAndWinnerInfo', function(data){
       
-      console.log(data);
+      console.log("gameOverAndWinnerInfo", data);
       
       // end game, unbind keypress event
       window.removeEventListener("keypressed", doKeyDown, false);
@@ -37,7 +37,7 @@ var game = {
       window.removeEventListener("keypressed", doKeyDown, false);
       window.addEventListener("keypressed", doKeyDown, false);
 
-      $(document).on('keydown', function(event) {
+      $(document).off("keydown").on('keydown', function(event) {
         if (event.keyCode == 32) {
           game.socket.emit('playerAttack');
         };
@@ -72,6 +72,15 @@ var game = {
           }
         }        
       }
+    });
+    
+    /**
+     * when no body is in game (not finish), let observer change to chatroom
+     */
+    socket.on('remove observer', function(data){
+        swapTo('chatroom');
+        socket.emit('chat message', 'Welcome back to room~');
+        $(".backClass").css('background-image', 'url(../images/Chatting_Background.png)');  
     });
     
     function doKeyDown(event) {
