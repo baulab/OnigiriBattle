@@ -163,7 +163,6 @@ $(document).ready(function() {
       $('.disp_messages').append(li);
       var cont = $('.disp_messages').parent();
       for( var obj in cont){
-          console.log(obj);
           $(cont).scrollTop($(cont)[0].scrollHeight);
       }
 

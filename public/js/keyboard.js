@@ -12,7 +12,6 @@
         var key = keyboard[keyCode];
         
         switch(keyCode){
-        case 32:
         case 37:
         case 38:
         case 39:

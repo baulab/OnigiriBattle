@@ -129,9 +129,10 @@ gameServer.prototype.onPlayerAttack = function(client) {
   if(this.isPlaying){
     // console.log("\t socket.io:: player:", client.uuid, "action: attack");
 
-    // var o = this.games[client.uuid];
-    // console.log("\t socket.io:: player:" , client.uuid,
-    //     "position ( x , y ) = ", "(",o.pos.x, ",",o.pos.y,")");
+    var o = this.games[client.uuid];
+    var dead = [];
+    console.log("\t socket.io:: player:" , client.uuid,
+         "position ( x , y ) = ", "(",o.pos.x, ",",o.pos.y,")");
 
     var x = o.pos.x;
     var y = o.pos.y;
@@ -140,10 +141,12 @@ gameServer.prototype.onPlayerAttack = function(client) {
     var radius = Math.round(Math.sqrt(Math.pow(50, 2) * 2)) - 35; // 扣35, 原半徑攻擊範圍過廣
 
     for (var uuid in this.games) {
-      if (uuid == o.uuid) {
+      var player = this.games[uuid];
+
+      // 自己或死者，無法攻擊
+      if (uuid == o.uuid || player.isDead) {
         continue;
       }
-      var player = this.games[uuid];
 
       // 以當前玩家中心坐標為圓心 (0, 0), y-axis 反轉，上正，下負 (Canvas y-axis，上負，下正)
       var adjustX = player.pos.x - x;
@@ -197,10 +200,15 @@ gameServer.prototype.onPlayerAttack = function(client) {
       }
 
       if (isSeeing && distance <= radius) {
-        // console.log("\t socket.io:: attacked player:" , player.uuid,
-        //   "position ( x , y ) = ", "(",player.pos.x, ",",player.pos.y,") is dead");
+        console.log("\t socket.io:: attacked player:" , player.uuid,
+           "position ( x , y ) = ", "(",player.pos.x, ",",player.pos.y,") is dead");
         player.isDead = true;
+        dead.push(player);
       };
+    }
+
+    if (dead.length > 0) {
+      io.emit('update players', {players: this.chatroom.playerList, attacker: o, dead: dead});
     }
   }
 };
