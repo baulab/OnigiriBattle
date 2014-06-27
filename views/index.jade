@@ -68,17 +68,20 @@ html
                 img.start_img
                 
     #game_area(style="display:none;")
-      .battlefield
-        img#origiri-images(style='display:none' src='../images/origiri_sprites.png')
-        .canvas_field
-          canvas#map(width="400" height="400")
-      
       #battleChatting
+        h3 Chatroom
         ul#battleChattingMessage.disp_messages
         textarea(id="enterBattleChattingMessage" placeholder="enter messages")
         button(style = "background-color: transparent; border: 0;")
           img(id="send_battle_message_btn" src="../images/send_message_btn.png")
+
+      #battlefield
+        img#origiri-images(style='display:none' src='../images/origiri_sprites.png')
+        .canvas_field
+          canvas#map(width="400" height="400")
+
       #battleList
+        h3 Player List
         ul#battlePlayerList
     #result_area
       div
