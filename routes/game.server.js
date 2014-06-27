@@ -2,7 +2,6 @@ var UUID = require('node-uuid');
 module.exports = exports = new gameServer();
 function gameServer() {
   this.games = {};
-  this.players = {};
   this.isPlaying = false;
   this.syncInterval = '';
   this.chatroom = {};
@@ -253,6 +252,14 @@ gameServer.prototype.checkGameOver = function() {
     io.sockets.emit('gameOverAndWinnerInfo', this.winner);
   }
 };
+
+gameServer.prototype.resetPlayers = function() {
+  for (var i = 0; i < this.chatroom.playerList.length; i++) {
+    var player = this.chatroom.playerList[i];
+    player.isDead = false;
+    player.setPlay(false);
+  }
+}
 
 gameServer.prototype.setChatroom = function(chatroom){
   this.chatroom = chatroom;
