@@ -1,8 +1,147 @@
-body {
-  padding: 50px;
+html, body {
+  background-image: url('../images/origiri_background2.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  padding: 0px;
+  margin: 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  height: 100%;
+  min-height:100%;
 }
 
-a {
-  color: #00B7FF;
+form.login {
+	margin-left: auto;
+  	margin-right: auto;
+	width: 250px;
+}
+
+form.login input, select{
+	width: 100px;
+}
+
+label {
+	float: left;
+	width: 100px;
+}
+
+ul, li {
+	text-align: left;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	text-align: left;
+}
+li{
+	margin-left:10px;
+}
+.index {
+  padding: 70px;
+  text-align: center;
+  font-family: Comic Sans MS,arial,helvetica,sans-serif;
+}
+
+.index > p {
+  font-size: 32px;
+} 
+
+.index > form {
+  font-size: 20px;
+}
+
+#loginInfoSubmit {
+  font-size: 20px;
+}
+
+#nameSpan, #colorSpan {
+  font-size: 20px;
+  font-family: Comic Sans MS,arial,helvetica,sans-serif;
+}
+
+.color{
+	font-weight:bold;	
+}
+
+#chatroom > table {
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 20px;
+  text-align: center;
+  font-family: Comic Sans MS,arial,helvetica,sans-serif;
+}
+
+#chattingRoom {
+  overflow: auto;
+  word-wrap: break-word;
+  word-break: normal; 
+}
+
+.start_btn {
+  background-color: transparent; 
+  border: 0;	
+}
+.start_img {
+  position: absolute;
+  left: 80%;
+  top: 80%;
+  content: url("../images/click_here.png");
+}
+.join{
+  content: url("../images/join_arrow.png");
+}
+.escape{
+  content: url("../images/escape_arrow.png");
+}
+.tableRight{
+  width:500px;
+}
+.send_message_btn{
+  content: url("../images/send_message_btn.png");
+}
+#friendsList {
+  width: 150px;
+  height: 300px;
+}
+
+#fightList {
+  width: 150px;
+  height: 300px;
+}
+
+.room {
+  margin-left: 60px;
+  width: 350px;
+  height: 265px;
+  background-color: rgba(255,255,255,0.8);
+  overflow: auto;
+}
+
+#enterMessage {
+  width: 300px;
+  height: 30px;
+}
+
+.battle {
+  position: absolute;
+  left: 50%;
+  top: 15%;
+}
+
+#result_area > div {
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px;
+  padding-top: 120px;
+}
+
+textarea {
+  background-color: rgba(255,255,255,0.8);
+}
+
+.invalid {
+    border: solid 2px #FF0000;  
+}
+
+#battleChatting .disp_messages li, #battlePlayerList li{
+	padding:2px 0px;
 }

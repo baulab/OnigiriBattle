@@ -5,10 +5,14 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , user = require('./routes/user')
+  , chatroom = require('./routes/chatroom')
+  , Player = require('./routes/player')
+  , gameServer = require('./routes/game.server')
   , http = require('http')
-  , path = require('path');
-
+  , path = require('path')
+  , socket = require('socket.io')
+  , UUID = require('node-uuid');
+  
 var app = express();
 
 // all environments
@@ -28,8 +32,78 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/users', user.list);
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
+});
+
+var io = socket.listen(server);
+
+io.on('connection', function(socket) {
+
+    socket.uuid = UUID();
+    
+    socket.emit('onconnected', {uuid: socket.uuid});
+    
+    socket.on('init player', function(player) {
+        // Retain new player
+        var newplayer = new Player(player.name, player.color, socket.uuid, socket);
+        socket.player = newplayer;
+        chatroom.addPlayer(newplayer);
+
+        // Notify client player joined
+        io.emit('player joined', {'chatroom': chatroom, 'newPlayer': newplayer});
+        console.log('player %s joined', newplayer.name);
+        
+        socket.emit("check game start", {"isPlaying": gameServer.isPlaying});
+    });
+    
+    gameServer.initGameEvent(io, socket, chatroom);
+    
+    socket.on('disconnect', function() {
+      // Remove player from players
+        if (!socket.player) {
+            // When server crash, client reconnect
+            console.log('dead socket disconnected');
+            return;
+        }
+
+        chatroom.removePlayer(socket.player.name);
+        
+        // Notify client player left.
+        io.emit('player left', {'chatroom': chatroom, 'exitPlayer': socket.player});
+        
+        console.log(socket.player.name + ' disconnected');
+    });
+    
+    socket.on('update play status', function(isPlay) {
+        console.log("player", socket.uuid, "wants play");
+        socket.player.setPlay(isPlay);
+        chatroom.updatePlayer(socket.player);
+        io.emit('update play status', {'chatroom': chatroom, 'updatePlayer': socket.player})
+    });
+    
+    socket.on('chat message', function(msg) {
+        if (!socket.player) {
+            // When server crash, client reconnect
+            console.log('dead socket disconnected');
+            return;
+        }
+        var out = msg.indexOf(socket.player.name+ '->') == 0 ? msg : socket.player.name + ': ' + msg;
+        console.log("\t socket.io:: chat message: ", out);
+        io.emit('chat message', {msg:out, from:socket.player});
+    });
+
+    socket.on('finish', function(obj){
+        gameServer.playerOut(socket.player);
+    	io.emit('game finish', {msg:obj,'updatePlayer': socket.player});
+    });
+    
+    socket.on('color list', function(){
+        var colors = [];
+        for(var i in chatroom.playerList){
+            colors.push(chatroom.playerList[i].color);
+        }
+        io.emit('update color', {clr:colors, player:socket.player});
+    })
 });

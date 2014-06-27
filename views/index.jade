@@ -1,5 +1,91 @@
-extends layout
+doctype html
 
-block content
-  h1= title
-  p Welcome to #{title}
+html
+  head
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/gameColor.css')
+    script(src='/socket.io/socket.io.js')
+    script(src='/js/jquery-1.11.1.min.js')
+    script(src='/js/keyboard.js')
+    script(src='/js/game.client.js')
+    script(src='/js/main.js')
+    
+  body.backClass
+    #index.index
+      p LOGIN
+      form(id="loginInfo" name="input" class="login" action="javascript:$('#loginInfoSubmit').click()")
+        label Username:
+        input(type="text", id="username" name="user")
+        br
+        label Character: 
+        select#color.color(name="character")
+          option(value="red" style="color:red") Red
+          option(value="yellow" style="color:yellow") Yellow
+          option(value="blue" style="color:blue") Blue
+          option(value="purple" style="color:purple") Purple
+          option(value="black" style="color:black") Black
+          option(value="green" style="color:green") Green
+          option(value="pink" style="color:pink") Pink
+          option(value="orange" style="color:orange") Orange        
+        br
+        button.start_btn
+          img#loginInfoSubmit.start_img
+        
+    #chatroom
+      p name: 
+        span#nameSpan Origiri
+      p color: 
+        span#colorSpan Red
+      table
+        tr
+          td(rowspan="2")
+            p FRIENDS
+            textarea#friendsList
+
+          td(rowspan="2")
+            div
+            button.start_btn
+              img#join.join
+            div  
+            button.start_btn
+              img#escape_btn.escape
+          td(rowspan="2")
+            p FIGHTING
+            textarea#fightList
+          td.tableRight
+            p Chatting Room
+            #chattingRoom.room
+              ul#messages.disp_messages
+          tr
+            td
+              textarea#enterMessage(placeholder="enter messages")
+              button.start_btn
+                img#send_message_btn.send_message_btn                
+          tr
+            td(id="start_btn_td" style="display:none")
+              span#start_btn_span
+              button#start_button.start_btn
+                img.start_img
+                
+    #game_area(style="display:none;")
+      #battleChatting
+        h3 Chatroom
+        ul#battleChattingMessage.disp_messages
+        textarea(id="enterBattleChattingMessage" placeholder="enter messages")
+        button(style = "background-color: transparent; border: 0;")
+          img(id="send_battle_message_btn" src="../images/send_message_btn.png")
+
+      #battlefield
+        img#origiri-images(style='display:none' src='../images/origiri_sprites.png')
+        img#grave-images(style='display:none' src='../images/grave_sprites.png')
+        .canvas_field
+          canvas#map(width="400" height="400")
+
+      #battleList
+        h3 Player List
+        ul#battlePlayerList
+    #result_area
+      div
+        h2 The WINNER is.....
+        h1#show_result
+        button#restart Restart
