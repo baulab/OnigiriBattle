@@ -38,8 +38,7 @@ var game = {
      * start game response
      */
     socket.on('start game', function(chatroom){
-      info = chatroom;
-      //$('#battleChattingMessage').scrollTop($('#battleChattingMessage').scrollHeight);
+      if (chatroom.playerList) {};
 
       // Control player
       window.removeEventListener("keypressed", doKeyDown, false);
@@ -87,6 +86,10 @@ var game = {
         }        
       }
     });
+
+    socket.on('need more players', function() {
+      alert('need more players');
+    })
     
     /**
      * when no body is in game (not finish), let observer change to chatroom

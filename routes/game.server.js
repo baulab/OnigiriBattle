@@ -66,6 +66,7 @@ gameServer.prototype.onInitGame = function(client) {
   console.log("\t socket.io:: host "+client.uuid+" start game.");
   
   var that = this;
+  var count = 0;
   
   // Join all ready users in gameServer.games
   for(var i=0; i<that.chatroom.playerList.length; i++){ 
@@ -75,13 +76,18 @@ gameServer.prototype.onInitGame = function(client) {
       that.games[uuid] = that.chatroom.playerList[i]; 
       that.games[uuid].randomPos();
       that.games[uuid].isDead = false;
+      count++;
     }
   }
   
   // broadcast join game players
-  io.sockets.emit('start game', that.chatroom);
-
-  this.isPlaying = true;
+  if (count < 2) {
+    this.games = {};
+    io.sockets.emit('need more players');
+  } else {
+    io.sockets.emit('start game', that.chatroom);
+    this.isPlaying = true;
+  }
 };
 
 gameServer.prototype.onPlayerMoved = function(client, data) {
