@@ -12,6 +12,7 @@
 1. [Express](http://expressjs.com) - Web application framework for node
 2. [Socket.IO](http://socket.io) - Real-time Engine
 3. [Jade](http://jade-lang.com) - Node Template Engine
+4. [node-uuid](https://github.com/broofa/node-uuid) - Generate RFC-compliant UUIDs in JavaScript
 
 ### Javascript frameworks
 
@@ -22,7 +23,7 @@
 1. Clone the project into your Nodeclipse workspace, then import it.
 2. Make sure that you had installed [Node.js](http://nodejs.org).
 2. Execute `npm install` in project folder to install node modules.
-3. Execute `npm start` to start the server at `localhost:3000`
+3. Execute `npm start` or `node app.js` to start the server at `localhost:3000`
 
 ## Developing
 
